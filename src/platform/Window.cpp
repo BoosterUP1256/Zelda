@@ -23,10 +23,6 @@ namespace Gas {
         if (!_nativeWindow)
         {
             std::cerr << "Error: failed to create window.\n";
-        
-            // glfwTerminate per window will not work if I want to support
-            // multiple windows later
-            glfwTerminate();
             exit(EXIT_FAILURE);
         }
     
