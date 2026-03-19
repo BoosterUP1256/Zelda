@@ -61,12 +61,12 @@ namespace Gas {
         return glfwWindowShouldClose(static_cast<GLFWwindow*>(_nativeWindow));
     }
     
-    uint32_t Window::getWidth()
+    uint32_t Window::getWidth() const
     {
         return _width;
     }
     
-    uint32_t Window::getHeight()
+    uint32_t Window::getHeight() const
     {
         return _height;
     }

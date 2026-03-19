@@ -3,7 +3,7 @@
 
 int main()
 {
-    Gas::Platform::Init();
+    Gas::Platform::init();
 
     Gas::Window window(800, 600, "Game");
 
@@ -13,5 +13,5 @@ int main()
         window.swapBuffers();
     }
 
-    Gas::Platform::Shutdown();
+    Gas::Platform::shutdown();
 }

@@ -5,8 +5,8 @@ namespace Gas {
     class Platform
     {
     public:
-        static void Init();
-        static void Shutdown();
+        static void init();
+        static void shutdown();
     };
 
 }

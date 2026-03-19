@@ -11,7 +11,7 @@ namespace Gas {
         std::cerr << "GLFW ERROR (" << error << "): " << description << "\n";
     }
 
-    void Platform::Init()
+    void Platform::init()
     {
         glfwSetErrorCallback(glfwErrorCallback);
 
@@ -22,7 +22,7 @@ namespace Gas {
         }
     }
 
-    void Platform::Shutdown()
+    void Platform::shutdown()
     {
         glfwTerminate();
     }

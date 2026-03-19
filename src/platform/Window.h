@@ -19,8 +19,8 @@ namespace Gas {
 
         bool shouldWindowClose();
 
-        uint32_t getWidth();
-        uint32_t getHeight();
+        uint32_t getWidth() const;
+        uint32_t getHeight() const;
 
     private:
         void*       _nativeWindow;
