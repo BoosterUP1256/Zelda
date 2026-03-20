@@ -2,10 +2,15 @@ cmake_minimum_required(VERSION 4.1.1)
 
 project(Zelda)
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 add_executable(${PROJECT_NAME} 
     src/main.cpp  
     src/platform/PlatformGLFW.cpp
-    src/platform/Window.cpp 
+    src/platform/Window.cpp
+    src/platform/KeyListener.cpp
     vendor/glad/src/gl.c
 )
 
