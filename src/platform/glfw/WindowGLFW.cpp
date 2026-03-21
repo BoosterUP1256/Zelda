@@ -1,10 +1,10 @@
-#include "../../core/Window.h"
+#include "core/Window.h"
 
 #include <iostream>
 #include <cstdlib>
 #include <GLFW/glfw3.h>
 
-#include "../../core/input/KeyListener.h"
+#include "core/input/KeyListener.h"
 
 namespace Gas {
 
