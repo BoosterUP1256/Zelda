@@ -4,14 +4,14 @@
 
 #include "KeyCodes.h"
 
-class Window;
+struct GLFWwindow;
 
 namespace Gas {
 
     class KeyListener
     {
     public:
-        static void init(Window* window);
+        static void init(GLFWwindow* window);
         static void update();
 
         static bool isKeyDown(Key key);
