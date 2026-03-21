@@ -1,7 +1,7 @@
-#include "platform/Platform.h"
-#include "platform/Window.h"
-#include "platform/KeyListener.h"
-#include "platform/KeyCodes.h"
+#include "core/Platform.h"
+#include "core/Window.h"
+#include "core/input/KeyListener.h"
+#include "core/input/KeyCodes.h"
 
 #include <iostream>
 

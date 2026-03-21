@@ -1,6 +1,5 @@
-#include "KeyListener.h"
-#include "KeyList.h"
-#include "KeyCodes.h"
+#include "../../../core/input/KeyListener.h"
+#include "KeyCodesGLFW.h"
 
 #include <GLFW/glfw3.h>
 

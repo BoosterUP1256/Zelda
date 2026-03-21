@@ -1,10 +1,10 @@
-#include "Platform.h"
+#include "../../core/Platform.h"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <cstdlib>
 
-#include "KeyListener.h"
+#include "../../core/input/KeyListener.h"
 
 namespace Gas {
 
