@@ -1,4 +1,4 @@
-#include "../../../core/input/KeyListener.h"
+#include "core/input/KeyListener.h"
 #include "KeyCodesGLFW.h"
 
 #include <GLFW/glfw3.h>
@@ -17,7 +17,7 @@ namespace Gas {
             g_glfwKeyMap[i] = Key::Unknown;
 
 #define X(name, glfw) g_glfwKeyMap[glfw] = Key::name;
-        GAS_KEY_LIST
+        GAS_GLFW_KEY_MAP
 #undef X
     }
 

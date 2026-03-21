@@ -1,7 +1,17 @@
 #pragma once
 
-#if defined(GAS_PLATFORM_GLFW)
-#include "../../platform/glfw/input/KeyCodesGLFW.h"
-#else
-#error "No platform defined"
-#endif
+namespace Gas {
+
+    enum class Key
+    {
+        A,
+        D,
+        W,
+        S,
+        Space,
+
+        Count,
+        Unknown = -1
+    };
+
+}
