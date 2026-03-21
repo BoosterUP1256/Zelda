@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <GLFW/glfw3.h>
 
-#include "KeyCodes.h"
 #include "KeyListener.h"
 
 namespace Gas {
@@ -33,7 +32,11 @@ namespace Gas {
         glfwSwapInterval(1);    // Sets vsync (this might be set default anyway)
 
         // Initialize input
-        Gas::KeyListener::init(static_cast<GLFWwindow*>(_nativeWindow));
+        glfwSetKeyCallback(static_cast<GLFWwindow*>(_nativeWindow), 
+            [](GLFWwindow* window, int key, int scancode, int action, int mods)
+            {
+                Gas::KeyListener::handleKeyEvent(key, action);
+            });
     
         glfwShowWindow(static_cast<GLFWwindow*>(_nativeWindow));
     }

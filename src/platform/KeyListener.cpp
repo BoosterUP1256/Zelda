@@ -22,7 +22,7 @@ namespace Gas {
 #undef X
     }
 
-    void KeyListener::s_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    void KeyListener::handleKeyEvent(int key, int action)
     {
         Key k = g_glfwKeyMap[key];
         if (k == Key::Unknown) return;
@@ -30,10 +30,9 @@ namespace Gas {
         s_currentKeysDown[static_cast<int>(k)] = (action != GLFW_RELEASE);
     }
 
-    void KeyListener::init(GLFWwindow* window)
+    void KeyListener::init()
     {
         s_initKeyMap();
-        glfwSetKeyCallback(window, s_keyCallback);
     }
 
     void KeyListener::update()

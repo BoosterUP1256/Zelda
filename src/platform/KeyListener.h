@@ -4,15 +4,15 @@
 
 #include "KeyCodes.h"
 
-struct GLFWwindow;
-
 namespace Gas {
 
     class KeyListener
     {
     public:
-        static void init(GLFWwindow* window);
+        static void init();
         static void update();
+
+        static void handleKeyEvent(int key, int action);
 
         static bool isKeyDown(Key key);
         static bool isKeyPressed(Key key);
@@ -20,7 +20,6 @@ namespace Gas {
 
     private:
         static void s_initKeyMap();
-        static void s_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
         static std::array<bool, static_cast<int>(Key::Count)> s_currentKeysDown;
         static std::array<bool, static_cast<int>(Key::Count)> s_previousKeysDown;

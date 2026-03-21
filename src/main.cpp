@@ -28,7 +28,7 @@ int main()
         {
             std::cout << "W\n";
         }
-        
+
         window.swapBuffers();
     }
 

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "KeyListener.h"
+
 namespace Gas {
 
     static void glfwErrorCallback(int error, const char* description)
@@ -20,6 +22,8 @@ namespace Gas {
             std::cerr << "Error: Failed to initialize GLFW.\n";
             exit(EXIT_FAILURE);
         }
+
+        KeyListener::init();
     }
 
     void Platform::shutdown()
