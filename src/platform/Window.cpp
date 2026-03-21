@@ -4,6 +4,9 @@
 #include <cstdlib>
 #include <GLFW/glfw3.h>
 
+#include "KeyCodes.h"
+#include "KeyListener.h"
+
 namespace Gas {
 
     Window::Window(uint32_t width, uint32_t height, const std::string& title,
@@ -28,6 +31,9 @@ namespace Gas {
     
         glfwMakeContextCurrent(static_cast<GLFWwindow*>(_nativeWindow));
         glfwSwapInterval(1);    // Sets vsync (this might be set default anyway)
+
+        // Initialize input
+        Gas::KeyListener::init(static_cast<GLFWwindow*>(_nativeWindow));
     
         glfwShowWindow(static_cast<GLFWwindow*>(_nativeWindow));
     }

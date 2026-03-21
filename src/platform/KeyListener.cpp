@@ -1,57 +1,59 @@
 #include "KeyListener.h"
+#include "KeyList.h"
+#include "KeyCodes.h"
 
 #include <GLFW/glfw3.h>
-#include <memory>
 
 namespace Gas {
 
-    void KeyListener::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    static std::array<Key, GLFW_KEY_LAST + 1> g_glfwKeyMap;
+
+    std::array<bool, static_cast<int>(Key::Count)> KeyListener::s_currentKeysDown {};
+    std::array<bool, static_cast<int>(Key::Count)> KeyListener::s_previousKeysDown {};
+
+    void KeyListener::s_initKeyMap()
     {
-        if (action == GLFW_PRESS) 
-        {
-            _currentKeysDown[key] = true;
-        }
-        else if (action == GLFW_RELEASE)
-        {
-            _currentKeysDown[key] = false;
-        }
+        // initialize everything to unknown by default
+        for (int i = 0; i <= GLFW_KEY_LAST; i++)
+            g_glfwKeyMap[i] = Key::Unknown;
+
+#define X(name, glfw) g_glfwKeyMap[glfw] = Key::name;
+        GAS_KEY_LIST
+#undef X
+    }
+
+    void KeyListener::s_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        Key k = g_glfwKeyMap[key];
+        if (k == Key::Unknown) return;
+
+        s_currentKeysDown[static_cast<int>(k)] = (action != GLFW_RELEASE);
     }
 
     void KeyListener::init(GLFWwindow* window)
     {
-        _currentKeysDown = new bool[350];
-        _previousKeysDown = new bool[350];
-        glfwSetKeyCallback(window, keyCallback);
-    }
-
-    void KeyListener::shutdown()
-    {
-        delete[] _currentKeysDown;
-        delete[] _previousKeysDown;
-        _currentKeysDown = nullptr;
-        _previousKeysDown = nullptr;
+        s_initKeyMap();
+        glfwSetKeyCallback(window, s_keyCallback);
     }
 
     void KeyListener::update()
     {
-        bool* temp = _previousKeysDown;
-        _previousKeysDown = _currentKeysDown;
-        _currentKeysDown = temp;
+        s_previousKeysDown = s_currentKeysDown;
     }
 
-    bool KeyListener::isKeyDown(int key)
+    bool KeyListener::isKeyDown(Key key)
     {
-        return _currentKeysDown[key];
+        return s_currentKeysDown[static_cast<int>(key)];
     }
 
-    bool KeyListener::isKeyPressed(int key)
+    bool KeyListener::isKeyPressed(Key key)
     {
-        return _currentKeysDown[key] && !_previousKeysDown[key];
+        return s_currentKeysDown[static_cast<int>(key)] && !s_previousKeysDown[static_cast<int>(key)];
     }
 
-    bool KeyListener::isKeyReleased(int key)
+    bool KeyListener::isKeyReleased(Key key)
     {
-        return !_currentKeysDown[key] && _previousKeysDown[key];
+        return !s_currentKeysDown[static_cast<int>(key)] && s_previousKeysDown[static_cast<int>(key)];
     }
 
 }
