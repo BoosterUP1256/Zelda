@@ -6,21 +6,22 @@
 
 namespace Gas {
 
-    static std::array<bool, static_cast<int>(Key::Count)> s_currentKeysDown;
-    static std::array<bool, static_cast<int>(Key::Count)> s_previousKeysDown;
+    static std::array<bool, static_cast<int>(Key::Count)> s_currentKeysDown  {};
+    static std::array<bool, static_cast<int>(Key::Count)> s_previousKeysDown {};
 
-    void KeyListener::s_handleKeyEvent(Key key, KeyAction action)
+    void KeyListener::s_handleKeyEvent(Key key, Action action)
     {
         int index = static_cast<int>(key);
 
-        if (action == KeyAction::Press || action == KeyAction::Repeat)
+        if (action == Action::Press || action == Action::Repeat)
             s_currentKeysDown[index] = true;
-        else if (action == KeyAction::Release)
+        else if (action == Action::Release)
             s_currentKeysDown[index] = false;
     }
 
     void KeyListener::init()
     {
+        // TODO: consider removing if unused
     }
 
     void KeyListener::update()

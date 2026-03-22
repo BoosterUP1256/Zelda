@@ -15,7 +15,8 @@ namespace Gas {
         static bool isKeyReleased(Key key);
     
     private:
-        static void s_handleKeyEvent(Key key, KeyAction action);
+        // Maybe eventually pass native Window reference to this function for multiple windows
+        static void s_handleKeyEvent(Key key, Action action);
 
         friend class InputBackend;
     };

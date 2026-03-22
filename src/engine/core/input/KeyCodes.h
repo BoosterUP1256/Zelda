@@ -14,16 +14,6 @@ namespace Gas {
         Unknown = -1
     };
 
-    enum class KeyAction
-    {
-        Press,
-        Release,
-        Repeat,
-
-        Count,
-        Unknown = -1
-    };
-
     enum class MouseButton
     {
         Left,
@@ -33,5 +23,16 @@ namespace Gas {
         Count,
         Unknown = -1
     };
+
+    enum class Action
+    {
+        Press,
+        Release,
+        Repeat,
+
+        Count,
+        Unknown = -1
+    };
+
 
 }

@@ -5,6 +5,7 @@
 #include <cstdlib>
 
 #include "core/input/KeyListener.h"
+#include "core/input/MouseListener.h"
 
 namespace Gas {
 
@@ -23,7 +24,9 @@ namespace Gas {
             exit(EXIT_FAILURE);
         }
 
+        // Currently don't do anything consider removing in the future
         KeyListener::init();
+        MouseListener::init();
     }
 
     void Platform::shutdown()

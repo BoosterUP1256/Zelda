@@ -11,15 +11,19 @@ namespace Gas {
     X(S, GLFW_KEY_S) \
     X(Space, GLFW_KEY_SPACE)
 
-#define GAS_GLFW_MOUSE_MAP \
+#define GAS_GLFW_MOUSE_BUTTON_MAP \
     X(Left, GLFW_MOUSE_BUTTON_LEFT) \
     X(Middle, GLFW_MOUSE_BUTTON_MIDDLE) \
     X(Right, GLFW_MOUSE_BUTTON_RIGHT)
 
     namespace GLFW {
 
-        Key glfwToKey(int glfwKey);
-        
+        Key toKey(int glfwKey);
+
+        MouseButton toMouseButton(int glfwMouseButton);
+
+        Action toAction(int glfwAction);
+
     }
 
 }

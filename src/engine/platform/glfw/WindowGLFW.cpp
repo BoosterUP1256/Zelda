@@ -29,30 +29,48 @@ namespace Gas {
             std::cerr << "Error: failed to create window.\n";
             exit(EXIT_FAILURE);
         }
+
+        GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(_nativeWindow);
     
-        glfwMakeContextCurrent(static_cast<GLFWwindow*>(_nativeWindow));
+        glfwMakeContextCurrent(glfwWindow);
         glfwSwapInterval(1);    // Sets vsync (this might be set default anyway)
 
         // Initialize input
-        glfwSetKeyCallback(static_cast<GLFWwindow*>(_nativeWindow), 
+        glfwSetKeyCallback(glfwWindow, 
             [](GLFWwindow* window, int key, int scancode, int action, int mods)
             {
-                Key engineKey = GLFW::glfwToKey(key);
-                if (engineKey == Key::Unknown) return;
-
-                KeyAction engineAction;
-                switch (action)
-                {
-                    case GLFW_PRESS:   engineAction = KeyAction::Press;   break;
-                    case GLFW_RELEASE: engineAction = KeyAction::Release; break;
-                    case GLFW_REPEAT:   engineAction = KeyAction::Repeat; break;
-                    default: return;
-                }
+                Key engineKey       = GLFW::toKey(key);
+                Action engineAction = GLFW::toAction(action);
+                if (engineKey == Key::Unknown || engineAction == Action::Unknown) return;
 
                 InputBackend::pushKeyEvent(engineKey, engineAction);
             });
+        
+        glfwSetCursorPosCallback(glfwWindow, 
+            [](GLFWwindow* window, double xpos, double ypos)
+            {
+                // NOTE: narrowing conversion
+                InputBackend::pushMousePosEvent(xpos, ypos);
+            });
+        
+        glfwSetMouseButtonCallback(glfwWindow,
+            [](GLFWwindow* window, int button, int action, int mods)
+            {
+                MouseButton engineMouseButton = GLFW::toMouseButton(button);
+                Action engineAction           = GLFW::toAction(action);
+                if (engineMouseButton == MouseButton::Unknown || engineAction == Action::Unknown) return;
+
+                InputBackend::pushMouseButtonEvent(engineMouseButton, engineAction);
+            });
+        
+        glfwSetScrollCallback(glfwWindow,
+            [](GLFWwindow* window, double xoffset, double yoffset)
+            {
+                // NOTE: narrowing conversion
+                InputBackend::pushMouseScrollEvent(xoffset, yoffset);
+            });
     
-        glfwShowWindow(static_cast<GLFWwindow*>(_nativeWindow));
+        glfwShowWindow(glfwWindow);
     }
     
     void Window::toggleFullscreen()

@@ -3,6 +3,7 @@
 #include <array>
 
 #include "KeyCodes.h"
+#include "core/Window.h"
 
 namespace Gas {
 
@@ -12,8 +13,11 @@ namespace Gas {
         static void init();
         static void update();
 
-        static void handleMouseButtonEvent();
-        static void handleMouseScrollEvent();
+        static bool isDragging();
+
+        static bool isMouseButtonDown(MouseButton button);
+        static bool isMouseButtonPressed(MouseButton button);
+        static bool isMouseButtonReleased(MouseButton button);
         
         static float getX();
         static float getY();
@@ -23,19 +27,13 @@ namespace Gas {
         static float getScrollX();
         static float getScrollY();
 
-        static bool isDragging();
-
-        static bool mouseButtonDown(MouseButton button);
-
     private:
-        static float s_scrollX;
-        static float s_scrollY;
-        static float s_xPos;
-        static float s_yPos;
-        static float s_lastY;
-        static float s_lastX;
-        static std::array<bool, 3> s_mouseButtonPressed;
-        static bool s_isDragging;
+        // Maybe eventually pass native Window reference to these functions for multiple windows
+        static void s_handleMousePosEvent(float xPos, float yPos);
+        static void s_handleMouseButtonEvent(MouseButton button, Action action);
+        static void s_handleMouseScrollEvent(float xOffset, float yOffset);
+
+        friend class InputBackend;
     };
 
 }
