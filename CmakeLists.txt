@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.1.1)
+cmake_minimum_required(VERSION 3.20) # Note: 4.1.1 is quite high/future-dated; 3.20+ is standard for modern C++
 
 project(Zelda)
 
@@ -6,34 +6,51 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF) 
 
-# GLFW backend
-add_library(platform_glfw
-    src/platform/glfw/WindowGLFW.cpp
-    src/platform/glfw/PlatformGLFW.cpp
-    src/platform/glfw/input/KeyListenerGLFW.cpp
-    src/platform/glfw/input/MouseListenerGLFW.cpp
-    src/platform/glfw/input/KeyCodesGLFW.cpp
-)
-        
-target_include_directories(platform_glfw PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_BINARY_DIR}/vendor/glfw-3.4/include
-)
+# ---------------------------------------------------------------------------
+# 1. External Dependencies
+# ---------------------------------------------------------------------------
 
-# Link dependencies
-add_subdirectory(vendor/glfw-3.4)
-target_link_libraries(platform_glfw PUBLIC glfw)
-
-# GLAD (later this should probably be moved to rendering module)
+# GLAD
 add_library(glad vendor/glad/src/gl.c)
-target_include_directories(glad PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include
+target_include_directories(glad PUBLIC vendor/glad/include)
+
+# GLFW
+add_subdirectory(vendor/glfw-3.4)
+
+# ---------------------------------------------------------------------------
+# 2. Engine Library
+# ---------------------------------------------------------------------------
+
+# We bundle core logic and platform-specific implementations into one target
+add_library(engine
+    # Core
+    src/engine/core/input/InputBackend.cpp
+    
+    # Platform (GLFW)
+    src/engine/platform/glfw/WindowGLFW.cpp
+    src/engine/platform/glfw/PlatformGLFW.cpp
+    src/engine/platform/glfw/input/KeyListenerGLFW.cpp
+    src/engine/platform/glfw/input/MouseListenerGLFW.cpp
+    src/engine/platform/glfw/input/KeyCodesGLFW.cpp
 )
 
-# Executable
-add_executable(${PROJECT_NAME} src/main.cpp src/core/input/InputBackend.cpp)
+# Set up include paths for the engine and anything that links to it
+target_include_directories(engine PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/engine
+)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    platform_glfw
+# Link internal dependencies
+# We use PUBLIC so the executable gets access to GLFW/GLAD headers automatically
+target_link_libraries(engine PUBLIC 
+    glfw 
     glad
 )
+
+# ---------------------------------------------------------------------------
+# 3. Executable
+# ---------------------------------------------------------------------------
+
+add_executable(${PROJECT_NAME} src/main.cpp)
+
+# Now you only need to link against the engine!
+target_link_libraries(${PROJECT_NAME} PRIVATE engine)
