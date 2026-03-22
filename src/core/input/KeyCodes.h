@@ -14,4 +14,24 @@ namespace Gas {
         Unknown = -1
     };
 
+    enum class KeyAction
+    {
+        Press,
+        Release,
+        Repeat,
+
+        Count,
+        Unknown = -1
+    };
+
+    enum class MouseButton
+    {
+        Left,
+        Middle,
+        Right,
+
+        Count,
+        Unknown = -1
+    };
+
 }

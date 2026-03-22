@@ -2,36 +2,25 @@
 #include "KeyCodesGLFW.h"
 
 #include <GLFW/glfw3.h>
+#include <array>
 
 namespace Gas {
 
-    static std::array<Key, GLFW_KEY_LAST + 1> g_glfwKeyMap;
+    static std::array<bool, static_cast<int>(Key::Count)> s_currentKeysDown;
+    static std::array<bool, static_cast<int>(Key::Count)> s_previousKeysDown;
 
-    std::array<bool, static_cast<int>(Key::Count)> KeyListener::s_currentKeysDown {};
-    std::array<bool, static_cast<int>(Key::Count)> KeyListener::s_previousKeysDown {};
-
-    void KeyListener::s_initKeyMap()
+    void KeyListener::s_handleKeyEvent(Key key, KeyAction action)
     {
-        // initialize everything to unknown by default
-        for (int i = 0; i <= GLFW_KEY_LAST; i++)
-            g_glfwKeyMap[i] = Key::Unknown;
+        int index = static_cast<int>(key);
 
-#define X(name, glfw) g_glfwKeyMap[glfw] = Key::name;
-        GAS_GLFW_KEY_MAP
-#undef X
-    }
-
-    void KeyListener::handleKeyEvent(int key, int action)
-    {
-        Key k = g_glfwKeyMap[key];
-        if (k == Key::Unknown) return;
-
-        s_currentKeysDown[static_cast<int>(k)] = (action != GLFW_RELEASE);
+        if (action == KeyAction::Press || action == KeyAction::Repeat)
+            s_currentKeysDown[index] = true;
+        else if (action == KeyAction::Release)
+            s_currentKeysDown[index] = false;
     }
 
     void KeyListener::init()
     {
-        s_initKeyMap();
     }
 
     void KeyListener::update()

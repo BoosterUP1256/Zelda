@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 
 #include "core/input/KeyListener.h"
+#include "platform/glfw/input/KeyCodesGLFW.h"
+#include "core/input/InputBackend.h"
 
 namespace Gas {
 
@@ -35,7 +37,19 @@ namespace Gas {
         glfwSetKeyCallback(static_cast<GLFWwindow*>(_nativeWindow), 
             [](GLFWwindow* window, int key, int scancode, int action, int mods)
             {
-                Gas::KeyListener::handleKeyEvent(key, action);
+                Key engineKey = GLFW::glfwToKey(key);
+                if (engineKey == Key::Unknown) return;
+
+                KeyAction engineAction;
+                switch (action)
+                {
+                    case GLFW_PRESS:   engineAction = KeyAction::Press;   break;
+                    case GLFW_RELEASE: engineAction = KeyAction::Release; break;
+                    case GLFW_REPEAT:   engineAction = KeyAction::Repeat; break;
+                    default: return;
+                }
+
+                InputBackend::pushKeyEvent(engineKey, engineAction);
             });
     
         glfwShowWindow(static_cast<GLFWwindow*>(_nativeWindow));
