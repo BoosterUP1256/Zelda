@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KeyCodes.h"
+#include "InputCodes.h"
 
 namespace Gas {
 

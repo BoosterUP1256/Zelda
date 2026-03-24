@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "KeyCodes.h"
+#include "InputCodes.h"
 #include "core/Window.h"
 
 namespace Gas {

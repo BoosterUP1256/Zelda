@@ -2,7 +2,7 @@
 #include "core/Window.h"
 #include "core/input/KeyListener.h"
 #include "core/input/MouseListener.h"
-#include "core/input/KeyCodes.h"
+#include "core/input/InputCodes.h"
 
 #include <iostream>
 

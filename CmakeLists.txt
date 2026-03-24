@@ -31,7 +31,7 @@ add_library(engine
     src/engine/platform/glfw/PlatformGLFW.cpp
     src/engine/platform/glfw/input/KeyListenerGLFW.cpp
     src/engine/platform/glfw/input/MouseListenerGLFW.cpp
-    src/engine/platform/glfw/input/KeyCodesGLFW.cpp
+    src/engine/platform/glfw/input/InputCodesGLFW.cpp
 )
 
 # Set up include paths for the engine and anything that links to it

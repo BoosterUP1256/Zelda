@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "core/input/KeyListener.h"
-#include "platform/glfw/input/KeyCodesGLFW.h"
+#include "platform/glfw/input/InputCodesGLFW.h"
 #include "core/input/InputBackend.h"
 
 namespace Gas {

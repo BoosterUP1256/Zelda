@@ -1,5 +1,5 @@
 #include "core/input/KeyListener.h"
-#include "KeyCodesGLFW.h"
+#include "InputCodesGLFW.h"
 
 #include <GLFW/glfw3.h>
 #include <array>
