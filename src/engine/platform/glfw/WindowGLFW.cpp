@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 #include "core/input/KeyListener.h"
@@ -18,6 +19,12 @@ namespace Gas {
           _isFullscreen(isFullscreen),
           _isResizable(isResizable)
     {
+        // initialize propper openGL version
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        // is window fullscreen
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, _isResizable);
         glfwWindowHint(GLFW_MAXIMIZED, _isFullscreen);
@@ -69,6 +76,28 @@ namespace Gas {
                 // NOTE: narrowing conversion
                 InputBackend::pushMouseScrollEvent(xoffset, yoffset);
             });
+
+        // load openGL
+        int openGLVersion = gladLoadGL(glfwGetProcAddress);
+
+        if (openGLVersion== 0)
+        {
+            std::cout << "Failed to initialize OpenGL context\n";
+            exit(EXIT_FAILURE);
+        }
+
+        int openGLVersionMajor = GLAD_VERSION_MAJOR(openGLVersion);
+        int openGLVersionMinor = GLAD_VERSION_MINOR(openGLVersion);
+
+        // check for version 4.6
+        // might be unesecary because glfwWindowHint throws error if
+        // cant find correct version
+        if (openGLVersionMajor != 4 || openGLVersionMinor != 6)
+        {
+            std::cout << "OpenGL version: " << openGLVersionMajor << "." << openGLVersionMinor << " is unsupported.\n";
+            std::cout << "Version 4.6 is required.\n";
+            exit(EXIT_FAILURE);
+        }
     
         glfwShowWindow(glfwWindow);
     }
