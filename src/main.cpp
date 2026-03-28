@@ -54,24 +54,35 @@ int main()
         // Render triangle!
 
         float points[] = {
-             0.0f,  0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f
+            -0.5f,  0.5f, 0.0f, // Top Left
+            -0.5f, -0.5f, 0.0f, // Bottom Left
+             0.5f, -0.5f, 0.0f, // Bottom Right
+             0.5f,  0.5f, 0.0f  // Top Right
         };
 
-        // vertex buffer object
-        GLuint vbo = 0;
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+        GLuint indices[] = {
+            0, 1, 2,
+            2, 3, 0,
+        };
 
         // vertex array object
         GLuint vao = 0;
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        // vertex buffer object
+        GLuint vbo = 0;
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), points, GL_STATIC_DRAW);
+
+        // index buffer object
+        GLuint ibo = 0;
+        glGenBuffers(1, &ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
         // Draw tringle
 
@@ -80,7 +91,7 @@ int main()
         shader.bind();
         glBindVertexArray(vao);
         
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         window.swapBuffers();
     }
