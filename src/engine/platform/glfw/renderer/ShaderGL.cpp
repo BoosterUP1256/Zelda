@@ -39,6 +39,7 @@ void Shader::setUniform4f(const std::string_view name, const float f0, const flo
     glUniform4f(_getUniformLocation(name), f0, f1, f2, f3);
 }
 
+// TODO: preallocate memory for strings
 std::string Shader::_readFile(const std::string_view filePath) {
     std::ifstream stream(filePath.data());
 
@@ -52,6 +53,7 @@ std::string Shader::_readFile(const std::string_view filePath) {
     return std::string{ (std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>() };
 }
 
+// TODO: preallocate memory for strings
 ShaderProgramSource Shader::_parseShader(const std::string_view filePath)
 {
     std::ifstream stream((filePath.data()));
