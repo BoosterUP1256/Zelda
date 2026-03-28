@@ -9,7 +9,10 @@ void main() {
 #shader fragment
 #version 410 core
 
-out vec4 frag_colour;
+out vec4 frag_color;
+
+uniform vec4 u_color;
+
 void main() {
-  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);
+  frag_color = u_color;
 }
