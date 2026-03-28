@@ -1,11 +1,9 @@
 #pragma once
-#include <iosfwd>
 
-// TODO: consider adding converting constructor
-// template <typename U>
-// explicit Vector2(const Vector2<U>& other)
-//   : x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {}
+#include <ostream>
 
+// TODO (FUTURE): add Lerp static method
+//      add isNearlyEqual method (epsilon comparison)
 //
 
 namespace Gas {
@@ -16,6 +14,10 @@ namespace Gas {
         T x, y;
 
         Vector2(T x, T y);
+
+        // converting constructor
+        template <typename U>
+        explicit Vector2(const Vector2<U>& other);
 
         // common named constructors
         static Vector2 zero();
@@ -31,6 +33,7 @@ namespace Gas {
         Vector2 operator/(T scalar) const;
 
         // utilities
+        static T dot(const Vector2& lhs, const Vector2& rhs);
         T dot(const Vector2& other) const;
         [[nodiscard]] double length() const;
         T lengthSquared() const;
@@ -43,6 +46,11 @@ namespace Gas {
     // implementation
     template<typename T>
     Vector2<T>::Vector2(T x, T y) : x(x), y(y) {}
+
+    template<typename T>
+    template<typename U>
+    Vector2<T>::Vector2(const Vector2<U> &other)
+        : x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {}
 
     template<typename T>
     Vector2<T> Vector2<T>::zero()
@@ -84,6 +92,12 @@ namespace Gas {
     Vector2<T> Vector2<T>::operator/(T scalar) const
     {
         return { x / scalar, y / scalar };
+    }
+
+    template<typename T>
+    T Vector2<T>::dot(const Vector2 &lhs, const Vector2 &rhs)
+    {
+        return lhs.x * rhs.x + lhs.y * rhs.y;
     }
 
     template<typename T>
