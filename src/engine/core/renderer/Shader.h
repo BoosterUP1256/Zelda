@@ -13,7 +13,8 @@ struct ShaderProgramSource
 class Shader
 {
 public:
-    explicit Shader(std::string_view);
+    Shader(std::string_view fragmentFilePath, std::string_view vertexFilePath);
+    explicit Shader(std::string_view filePath);
     ~Shader();
 
     void bind() const;
@@ -25,13 +26,14 @@ public:
 
 
 private:
-    ShaderProgramSource _parseShader(std::string_view filePath);
-    uint32_t _compileShader(uint32_t type, std::string_view source);
-    uint32_t _createShader(std::string_view vertexShader, std::string_view fragmentShader);
+    // TODO: put this elsewhere for other parts of engine to use
+    static std::string _readFile(std::string_view filePath);
+    static ShaderProgramSource _parseShader(std::string_view filePath);
+    static uint32_t _compileShader(uint32_t type, std::string_view source);
+    static uint32_t _createShader(std::string_view vertexShader, std::string_view fragmentShader);
     int _getUniformLocation(std::string_view name);
 
     uint32_t _rendererId;
     // caching system for uniforms
-    std::string _filePath;
     std::unordered_map<std::string, int> _uniformLocationCache;
 };
