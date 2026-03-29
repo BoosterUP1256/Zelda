@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# For better IntelliSense (might happen by default in vscode)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # ---------------------------------------------------------------------------
 # 1. External Dependencies (CRITICAL: These must be defined first!)
 # ---------------------------------------------------------------------------
@@ -22,28 +25,21 @@ add_subdirectory(vendor/glfw-3.4)
 # 2. Engine Logic
 # ---------------------------------------------------------------------------
 
-# Core: The logic that doesn't care about the OS
-add_library(engine_core STATIC
-        src/engine/core/input/InputBackend.h
-        src/engine/core/input/InputBackend.cpp
-        src/engine/core/input/InputCodes.h
-        src/engine/core/input/KeyListener.h
-        src/engine/core/input/MouseListener.h
-        src/engine/core/math/Vector2.h
-        src/engine/core/Platform.h
-        src/engine/core/Window.h
-)
-# This allows "#include <core/Window.h>" to work everywhere
-target_include_directories(engine_core PUBLIC src/engine)
-
-# Platform: The logic that talks to GLFW/OpenGL
-add_library(engine_platform_glfw STATIC
-        src/engine/platform/glfw/input/InputCodesGLFW.h
-        src/engine/platform/glfw/input/InputCodesGLFW.cpp
-        src/engine/platform/glfw/input/KeyListenerGLFW.cpp
-        src/engine/platform/glfw/input/MouseListenerGLFW.cpp
-        src/engine/platform/glfw/PlatformGLFW.cpp
-        src/engine/platform/glfw/WindowGLFW.cpp
+# We bundle core logic and platform-specific implementations into one target
+add_library(engine
+    # Core
+    src/engine/core/input/InputBackend.cpp
+    
+    # Platform (GLFW)
+    src/engine/platform/glfw/WindowGLFW.cpp
+    src/engine/platform/glfw/PlatformGLFW.cpp
+    src/engine/platform/glfw/input/KeyListenerGLFW.cpp
+    src/engine/platform/glfw/input/MouseListenerGLFW.cpp
+    src/engine/platform/glfw/input/InputCodesGLFW.cpp
+    src/engine/platform/glfw/renderer/ShaderGL.cpp
+        src/engine/platform/glfw/renderer/VertexBufferGL.cpp
+        src/engine/platform/glfw/renderer/IndexBufferGL.cpp
+        src/engine/platform/glfw/renderer/VertexArrayGL.cpp
 )
 # We link PUBLIC here so anyone using the platform also gets Core/GLFW/GLAD headers
 target_link_libraries(engine_platform_glfw PUBLIC engine_core glfw glad)
@@ -68,7 +64,11 @@ target_include_directories(GasEngine INTERFACE
 # 4. The Game Executable
 # ---------------------------------------------------------------------------
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp
+        src/engine/core/renderer/VertexBuffer.h
+        src/engine/core/renderer/IndexBuffer.h
+        src/engine/core/renderer/VertexArray.h
+        src/engine/core/renderer/VertexBufferLayout.h)
 
 # Link to the interface we just built
 target_link_libraries(${PROJECT_NAME} PRIVATE GasEngine)

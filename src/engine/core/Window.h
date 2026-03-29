@@ -8,7 +8,7 @@ namespace Gas {
     class Window
     {
     public:
-        Window(uint32_t width, uint32_t height, const std::string& title,
+        Window(uint32_t width, uint32_t height, std::string title,
                bool isFullscreen = false, bool isResizable = false);
 
         void toggleFullscreen();
@@ -19,8 +19,8 @@ namespace Gas {
 
         bool shouldWindowClose();
 
-        uint32_t getWidth() const;
-        uint32_t getHeight() const;
+        [[nodiscard]] uint32_t getWidth() const;
+        [[nodiscard]] uint32_t getHeight() const;
 
     private:
         void*       _nativeWindow;

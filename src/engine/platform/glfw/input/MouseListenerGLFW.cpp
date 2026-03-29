@@ -2,6 +2,8 @@
 
 namespace Gas {
 
+    // TODO: Implement frame stamping
+
     static float               s_scrollX              = 0.0f;
     static float               s_scrollY              = 0.0f;
     static float               s_xPos                 = 0.0f; 
