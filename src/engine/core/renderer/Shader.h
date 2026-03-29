@@ -36,7 +36,7 @@ namespace Gas {
 
         uint32_t _rendererId;
         // caching system for uniforms
-        std::unordered_map<std::string, int> _uniformLocationCache;
+        std::unordered_map<std::string, int> _uniformLocationCache{};
     };
 
 }
