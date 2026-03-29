@@ -38,6 +38,7 @@ add_library(engine
     src/engine/platform/glfw/renderer/ShaderGL.cpp
         src/engine/platform/glfw/renderer/VertexBufferGL.cpp
         src/engine/platform/glfw/renderer/IndexBufferGL.cpp
+        src/engine/platform/glfw/renderer/VertexArrayGL.cpp
 )
 
 # Set up include paths for the engine and anything that links to it
@@ -58,7 +59,9 @@ target_link_libraries(engine PUBLIC
 
 add_executable(${PROJECT_NAME} src/main.cpp
         src/engine/core/renderer/VertexBuffer.h
-        src/engine/core/renderer/IndexBuffer.h)
+        src/engine/core/renderer/IndexBuffer.h
+        src/engine/core/renderer/VertexArray.h
+        src/engine/core/renderer/VertexBufferLayout.h)
 
 # Now you only need to link against the engine!
 target_link_libraries(${PROJECT_NAME} PRIVATE engine)
