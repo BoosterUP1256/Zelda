@@ -31,32 +31,14 @@ int main()
         2, 3, 0,
     };
 
-    // vertex array object
-    // GLuint vao = 0;
-    // glGenVertexArrays(1, &vao);
-    // glBindVertexArray(vao);
-    // glEnableVertexAttribArray(0);
-
     Gas::VertexArray vao;
 
-    // vertex buffer object
-    // GLuint vbo = 0;
-    // glGenBuffers(1, &vbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    // glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), points, GL_STATIC_DRAW);
     Gas::VertexBuffer vbo(points, sizeof(points));
     Gas::VertexBufferLayout layout;
 
     layout.push<float>(3);
     vao.addBuffer(vbo, layout);
 
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    // index buffer object
-    // GLuint ibo = 0;
-    // glGenBuffers(1, &ibo);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
     Gas::IndexBuffer ibo(indices, 6);
 
     Gas::Shader shader("../src/res/shaders/basic.glsl");
@@ -99,7 +81,6 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.bind();
-        //glBindVertexArray(vao);
         vao.bind();
         
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
