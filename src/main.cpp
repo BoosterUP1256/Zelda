@@ -3,13 +3,14 @@
 #include "core/input/KeyListener.h"
 #include "core/input/MouseListener.h"
 #include "core/input/InputCodes.h"
+#include "core/renderer/Shader.h"
+#include "core/renderer/IndexBuffer.h"
+#include "core/renderer/VertexBuffer.h"
 
 #include <iostream>
 #include <fstream>
 #include <glad/gl.h>
 #include <string>
-
-#include "core/renderer/Shader.h"
 
 int main()
 {
@@ -36,20 +37,22 @@ int main()
     glEnableVertexAttribArray(0);
 
     // vertex buffer object
-    GLuint vbo = 0;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), points, GL_STATIC_DRAW);
+    // GLuint vbo = 0;
+    // glGenBuffers(1, &vbo);
+    // glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    // glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), points, GL_STATIC_DRAW);
+    Gas::VertexBuffer vbo(points, sizeof(points));
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     // index buffer object
-    GLuint ibo = 0;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+    // GLuint ibo = 0;
+    // glGenBuffers(1, &ibo);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+    Gas::IndexBuffer ibo(indices, 6);
 
-    Shader shader("../src/res/shaders/basic.glsl");
+    Gas::Shader shader("../src/res/shaders/basic.glsl");
     shader.bind();
     shader.setUniform4f("u_color", 0.2f, 0.3f, 0.8f, 1.0f);
 

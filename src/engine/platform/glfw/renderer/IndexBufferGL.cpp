@@ -1,0 +1,37 @@
+#include "core/renderer/IndexBuffer.h"
+
+#include <glad/gl.h>
+
+namespace Gas {
+
+    IndexBuffer::IndexBuffer(const uint32_t *data, uint32_t count)
+        : _rendererId(0), _count(count)
+    {
+        glGenBuffers(1, &_rendererId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(GLuint), data, GL_STATIC_DRAW);
+        // TODO: consider unbindng here to avoid confusion?
+    }
+
+    IndexBuffer::~IndexBuffer()
+    {
+        glDeleteBuffers(1, &_rendererId);
+    }
+
+    void IndexBuffer::bind() const
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererId);
+    }
+
+    void IndexBuffer::unbind() const
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    uint32_t IndexBuffer::getCount() const
+    {
+        return _count;
+    }
+}
+
+
