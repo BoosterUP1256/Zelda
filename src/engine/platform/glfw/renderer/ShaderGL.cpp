@@ -6,6 +6,7 @@
 #include <glad/gl.h>
 
 namespace Gas {
+
     Shader::Shader(const std::string_view fragmentFilePath, const std::string_view vertexFilePath)
         : _rendererId(0)
     {
@@ -142,4 +143,5 @@ namespace Gas {
 
         return location;
     }
+
 }

@@ -4,7 +4,7 @@
 
 namespace Gas {
 
-    VertexBuffer::VertexBuffer(const void *data, uint32_t size)
+    VertexBuffer::VertexBuffer(const void* data, const uint32_t size)
         : _rendererId(0)
     {
         glGenBuffers(1, &_rendererId);
