@@ -4,7 +4,7 @@
 
 namespace Gas {
 
-    IndexBuffer::IndexBuffer(const uint32_t *data, uint32_t count)
+    IndexBuffer::IndexBuffer(const uint32_t* data, const uint32_t count)
         : _rendererId(0), _count(count)
     {
         glGenBuffers(1, &_rendererId);
@@ -33,5 +33,3 @@ namespace Gas {
         return _count;
     }
 }
-
-
