@@ -47,9 +47,6 @@ int main()
 
     while (!window.shouldWindowClose())
     {
-        Gas::KeyListener::update();
-        Gas::MouseListener::update();
-
         window.pollEvents();
 
         // Test keys

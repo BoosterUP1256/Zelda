@@ -2,18 +2,20 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <utility>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 #include "core/input/KeyListener.h"
+#include "core/input/MouseListener.h"
 #include "platform/glfw/input/InputCodesGLFW.h"
 #include "core/input/InputBackend.h"
 
 namespace Gas {
 
-    Window::Window(uint32_t width, uint32_t height, const std::string& title,
+    Window::Window(uint32_t width, uint32_t height, std::string  title,
                    bool isFullscreen, bool isResizable)
-        : _title(title),
+        : _title(std::move(title)),
           _width(width),
           _height(height),
           _isFullscreen(isFullscreen),
@@ -37,7 +39,7 @@ namespace Gas {
             exit(EXIT_FAILURE);
         }
 
-        GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(_nativeWindow);
+        auto* glfwWindow = static_cast<GLFWwindow*>(_nativeWindow);
     
         glfwMakeContextCurrent(glfwWindow);
         glfwSwapInterval(1);    // Sets vsync (this might be set default anyway)
@@ -118,6 +120,8 @@ namespace Gas {
     
     void Window::pollEvents()
     {
+        Gas::KeyListener::update();
+        Gas::MouseListener::update();
         glfwPollEvents();
     }
     
