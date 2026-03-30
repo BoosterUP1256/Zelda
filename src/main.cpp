@@ -13,6 +13,8 @@
 #include <glad/gl.h>
 #include <string>
 
+#include "core/renderer/Renderer.h"
+
 int main()
 {
     Gas::Platform::init();
@@ -75,12 +77,12 @@ int main()
 
         // Draw tringle
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        Gas::Renderer::clear();
 
         shader.bind();
         vao.bind();
         
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        Gas::Renderer::draw(vao, ibo, shader);
 
         window.swapBuffers();
     }

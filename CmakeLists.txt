@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.20) # Note: 4.1.1 is quite high/future-dated; 3.20+ is standard for modern C++
+
 project(Zelda)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -9,66 +10,60 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ---------------------------------------------------------------------------
-# 1. External Dependencies (CRITICAL: These must be defined first!)
+# 1. External Dependencies
 # ---------------------------------------------------------------------------
 
-# GLAD setup
-# Assuming your glad files are in vendor/glad
+# GLAD
 add_library(glad vendor/glad/src/gl.c)
 target_include_directories(glad PUBLIC vendor/glad/include)
 
-# GLFW setup
-# Make sure the folder name "vendor/glfw-3.4" matches your actual folder name exactly
+# GLFW
 add_subdirectory(vendor/glfw-3.4)
 
 # ---------------------------------------------------------------------------
-# 2. Engine Logic
+# 2. Engine Library
 # ---------------------------------------------------------------------------
 
 # We bundle core logic and platform-specific implementations into one target
 add_library(engine
-    # Core
-    src/engine/core/input/InputBackend.cpp
-    
-    # Platform (GLFW)
-    src/engine/platform/glfw/WindowGLFW.cpp
-    src/engine/platform/glfw/PlatformGLFW.cpp
-    src/engine/platform/glfw/input/KeyListenerGLFW.cpp
-    src/engine/platform/glfw/input/MouseListenerGLFW.cpp
-    src/engine/platform/glfw/input/InputCodesGLFW.cpp
-    src/engine/platform/glfw/renderer/ShaderGL.cpp
+        # Core
+        src/engine/core/input/InputBackend.cpp
+
+        # Platform (GLFW)
+        src/engine/platform/glfw/WindowGLFW.cpp
+        src/engine/platform/glfw/PlatformGLFW.cpp
+        src/engine/platform/glfw/input/KeyListenerGLFW.cpp
+        src/engine/platform/glfw/input/MouseListenerGLFW.cpp
+        src/engine/platform/glfw/input/InputCodesGLFW.cpp
+        src/engine/platform/glfw/renderer/ShaderGL.cpp
         src/engine/platform/glfw/renderer/VertexBufferGL.cpp
         src/engine/platform/glfw/renderer/IndexBufferGL.cpp
         src/engine/platform/glfw/renderer/VertexArrayGL.cpp
-)
-# We link PUBLIC here so anyone using the platform also gets Core/GLFW/GLAD headers
-target_link_libraries(engine_platform_glfw PUBLIC engine_core glfw glad)
-target_include_directories(engine_platform_glfw PUBLIC src/engine)
-
-# ---------------------------------------------------------------------------
-# 3. The Unified "GasEngine" Interface
-# ---------------------------------------------------------------------------
-
-add_library(GasEngine INTERFACE)
-
-target_link_libraries(GasEngine INTERFACE
-        engine_core
-        engine_platform_glfw
+        src/engine/platform/glfw/renderer/RendererGL.cpp
 )
 
-target_include_directories(GasEngine INTERFACE
+# Set up include paths for the engine and anything that links to it
+target_include_directories(engine PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/engine
 )
 
+# Link internal dependencies
+# We use PUBLIC so the executable gets access to GLFW/GLAD headers automatically
+target_link_libraries(engine PUBLIC
+        glfw
+        glad
+)
+
 # ---------------------------------------------------------------------------
-# 4. The Game Executable
+# 3. Executable
 # ---------------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME} src/main.cpp
         src/engine/core/renderer/VertexBuffer.h
         src/engine/core/renderer/IndexBuffer.h
         src/engine/core/renderer/VertexArray.h
-        src/engine/core/renderer/VertexBufferLayout.h)
+        src/engine/core/renderer/VertexBufferLayout.h
+        src/engine/core/renderer/Renderer.h)
 
-# Link to the interface we just built
-target_link_libraries(${PROJECT_NAME} PRIVATE GasEngine)
+# Now you only need to link against the engine!
+target_link_libraries(${PROJECT_NAME} PRIVATE engine)

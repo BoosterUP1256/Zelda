@@ -12,7 +12,7 @@ namespace Gas {
         void bind() const;
         void unbind() const;
 
-        [[nodiscard]] inline uint32_t getCount() const;
+        [[nodiscard]] uint32_t getCount() const;
 
     private:
         uint32_t _rendererId;
