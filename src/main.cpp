@@ -14,6 +14,7 @@
 #include <string>
 
 #include "core/renderer/Renderer.h"
+#include "core/renderer/Texture.h"
 
 int main()
 {
@@ -21,6 +22,7 @@ int main()
 
     Gas::Window window(800, 600, "Game");
 
+    // TODO: Add texture coordinates
     constexpr float points[] = {
         -0.5f,  0.5f, 0.0f, // Top Left
         -0.5f, -0.5f, 0.0f, // Bottom Left
@@ -46,6 +48,10 @@ int main()
     Gas::Shader shader("../src/res/shaders/basic.glsl");
     shader.bind();
     shader.setUniform4f("u_color", 0.2f, 0.3f, 0.8f, 1.0f);
+
+    const Gas::Texture texture("../src/res/textures/funny_face.png");
+    texture.bind();
+    shader.setUniform1i("u_texture", 0);
 
     while (!window.shouldWindowClose())
     {

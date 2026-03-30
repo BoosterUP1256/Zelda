@@ -36,6 +36,16 @@ namespace Gas {
         glUseProgram(0);
     }
 
+    void Shader::setUniform1i(std::string_view name, int value)
+    {
+        glUniform1i(_getUniformLocation(name), value);
+    }
+
+    void Shader::setUniform1f(std::string_view name, float value)
+    {
+        glUniform1f(_getUniformLocation(name), value);
+    }
+
     void Shader::setUniform4f(const std::string_view name, const float f0, const float f1, const float f2, const float f3)
     {
         glUniform4f(_getUniformLocation(name), f0, f1, f2, f3);
@@ -43,7 +53,7 @@ namespace Gas {
 
     // TODO: preallocate memory for strings
     std::string Shader::_readFile(const std::string_view filePath) {
-        std::ifstream stream(filePath.data());
+        std::ifstream stream{std::string(filePath)};
 
         if (!stream.is_open())
         {
@@ -58,7 +68,7 @@ namespace Gas {
     // TODO: preallocate memory for strings
     ShaderProgramSource Shader::_parseShader(const std::string_view filePath)
     {
-        std::ifstream stream((filePath.data()));
+        std::ifstream stream{std::string(filePath)};
 
         enum class ShaderType
         {
@@ -88,9 +98,10 @@ namespace Gas {
 
     uint32_t Shader::_compileShader(const uint32_t type, const std::string_view source)
     {
-        uint32_t id = glCreateShader(type);
+        const uint32_t id = glCreateShader(type);
         const char* src = source.data();
-        glShaderSource(id, 1, &src, nullptr);
+        const int length = static_cast<int>(source.size());
+        glShaderSource(id, 1, &src, &length);
         glCompileShader(id);
 
         int result;
@@ -132,14 +143,19 @@ namespace Gas {
 
     int Shader::_getUniformLocation(const std::string_view name)
     {
-        if (_uniformLocationCache.contains(name.data()))
-            return _uniformLocationCache[name.data()];
+        const std::string key(name);
 
-        const int location = glGetUniformLocation(_rendererId, name.data());
+        auto [it, inserted] = _uniformLocationCache.try_emplace(key, -2);
+
+        if (!inserted)
+            return it->second;
+
+        const int location = glGetUniformLocation(_rendererId, key.c_str());
+
         if (location == -1)
-            std::cout << "Warning: uniform " << name << " doesn't exist!" << std::endl;
+            std::cout << "Warning: uniform " << key << " doesn't exist!" << std::endl;
 
-        _uniformLocationCache[name.data()] = location;
+        it->second = location;
 
         return location;
     }

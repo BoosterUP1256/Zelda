@@ -22,7 +22,7 @@ add_subdirectory(vendor/glfw-3.4)
 
 # stb image
 add_library(stb_image vendor/stb_image/stb_image.cpp)
-target_include_directories(stb_image PUBLIC vendor/stb_image)
+target_include_directories(stb_image PUBLIC vendor/stb_image/include)
 
 # ---------------------------------------------------------------------------
 # 2. Engine Library
@@ -44,6 +44,7 @@ add_library(engine
         src/engine/platform/glfw/renderer/IndexBufferGL.cpp
         src/engine/platform/glfw/renderer/VertexArrayGL.cpp
         src/engine/platform/glfw/renderer/RendererGL.cpp
+        src/engine/platform/glfw/renderer/TextureGL.cpp
 )
 
 # Set up include paths for the engine and anything that links to it
@@ -68,7 +69,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/engine/core/renderer/IndexBuffer.h
         src/engine/core/renderer/VertexArray.h
         src/engine/core/renderer/VertexBufferLayout.h
-        src/engine/core/renderer/Renderer.h)
+        src/engine/core/renderer/Renderer.h
+        src/engine/core/renderer/Texture.h)
 
 # Now you only need to link against the engine!
 target_link_libraries(${PROJECT_NAME} PRIVATE engine)

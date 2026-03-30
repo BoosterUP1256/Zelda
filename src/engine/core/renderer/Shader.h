@@ -23,6 +23,9 @@ namespace Gas {
 
         // uniforms
         // this system will probably change for actual game implementation
+        // TODO: Maybe method overloading to cut down on methods?
+        void setUniform1i(std::string_view name, int value);
+        void setUniform1f(std::string_view name, float value);
         void setUniform4f(std::string_view name, float f0, float f1, float f2, float f3);
 
 
