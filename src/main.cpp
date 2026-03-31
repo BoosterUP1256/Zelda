@@ -22,12 +22,11 @@ int main()
 
     Gas::Window window(800, 600, "Game");
 
-    // TODO: Add texture coordinates
     constexpr float points[] = {
-        -0.5f,  0.5f, 0.0f, // Top Left
-        -0.5f, -0.5f, 0.0f, // Bottom Left
-         0.5f, -0.5f, 0.0f, // Bottom Right
-         0.5f,  0.5f, 0.0f  // Top Right
+        0.5f,  0.5f, 0.0f,      1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,      1.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,      0.0f, 0.0f,   // bottom left
+       -0.5f,  0.5f, 0.0f,      0.0f, 1.0f    // top left
     };
 
     constexpr GLuint indices[] = {
@@ -41,6 +40,7 @@ int main()
     Gas::VertexBufferLayout layout;
 
     layout.push<float>(3);
+    layout.push<float>(2);
     vao.addBuffer(vbo, layout);
 
     Gas::IndexBuffer ibo(indices, 6);

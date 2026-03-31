@@ -1,3 +1,6 @@
+#include <iostream>
+#include <ostream>
+
 #include "core/renderer/Texture.h"
 
 #include <glad/gl.h>
@@ -15,6 +18,9 @@ namespace Gas {
     {
         stbi_set_flip_vertically_on_load(true);
         _localBuffer = stbi_load(_filePath.c_str(), &_width, &_height, &_bpp, 4);
+
+        if (!_localBuffer)
+            std::cerr << "Failed to load texture" << std::endl;
 
         glGenTextures(1, &_rendererId);
         glBindTexture(GL_TEXTURE_2D, _rendererId);

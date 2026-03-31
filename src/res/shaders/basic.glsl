@@ -1,18 +1,27 @@
 #shader vertex
 #version 410 core
 
-in vec3 vp;
+layout(location = 0) in vec3 vp;
+layout(location = 1) in vec2 texCoord;
+
+out vec2 v_texCoord;
+
 void main() {
   gl_Position = vec4(vp, 1.0);
+  v_texCoord = texCoord;
 }
 
 #shader fragment
 #version 410 core
 
-out vec4 frag_color;
+layout(location = 0) out vec4 frag_color;
+
+in vec2 v_texCoord;
 
 uniform vec4 u_color;
+uniform sampler2D u_texture;
 
 void main() {
-  frag_color = u_color;
+  vec4 texColor = texture(u_texture, v_texCoord);
+  frag_color = vec4(1.0, 0.0, 1.0, 1.0);
 }
