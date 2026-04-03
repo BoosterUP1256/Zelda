@@ -1,18 +1,27 @@
+#include <algorithm>
+#include <iostream>
+
 #include "core/input/MouseListener.h"
 
 namespace Gas {
 
-    // TODO: Implement frame stamping
+    // TODO: Consider moving making a current_frame translation unit header for keyboard, mouse and gamepad
+    // TODO: input so I don't have to keep three frame IDs. Maybe a separate time or delta class
 
-    static float               s_scrollX              = 0.0f;
-    static float               s_scrollY              = 0.0f;
-    static float               s_xPos                 = 0.0f; 
-    static float               s_yPos                 = 0.0f;
-    static float               s_lastY                = 0.0f;
-    static float               s_lastX                = 0.0f;
-    static bool                s_isDragging           = 0.0f;
-    static std::array<bool, 3> s_currentButtonsDown    {};
-    static std::array<bool, 3> s_previousButtonsDown   {};
+    static uint64_t s_currentFrame    = 0;
+    static uint64_t s_lastScrollFrame = 0;
+    static float    s_scrollX         = 0.0f;
+    static float    s_scrollY         = 0.0f;
+
+    static uint64_t s_lastMoveFrame   = 0;
+    static float    s_xPos            = 0.0f;
+    static float    s_yPos            = 0.0f;
+    static float    s_dx              = 0.0f;
+    static float    s_dy              = 0.0f;
+
+    static std::array<bool, static_cast<int>(MouseButton::Count)>     s_currentButtonsDown {};
+    static std::array<uint64_t, static_cast<int>(MouseButton::Count)> s_lastPressedFrame   {};
+    static std::array<uint64_t, static_cast<int>(MouseButton::Count)> s_lastReleasedFrame  {};
 
 
     void MouseListener::init()
@@ -22,21 +31,51 @@ namespace Gas {
 
     void MouseListener::update()
     {
-        s_scrollX = 0.0f;
-        s_scrollY = 0.0f;
-        s_lastX   = s_xPos;
-        s_lastY   = s_yPos;
+        // s_scrollX = 0.0f;
+        // s_scrollY = 0.0f;
+        // s_lastX   = s_xPos;
+        // s_lastY   = s_yPos;
+        //
+        // s_previousButtonsDown = s_currentButtonsDown;
+        s_currentFrame++;
+    }
 
-        s_previousButtonsDown = s_currentButtonsDown;
+    bool MouseListener::isDragging()
+    {
+        if (s_lastMoveFrame != s_currentFrame)
+            return false;
+
+        for (const bool isDown : s_currentButtonsDown)
+        {
+            if (isDown) return true;
+        }
+
+        return false;
     }
 
     void MouseListener::s_handleMousePosEvent(float xPos, float yPos)
     {
-        s_lastX = s_xPos;
-        s_lastY = s_yPos;
+        // s_lastX = s_xPos;
+        // s_lastY = s_yPos;
+        // s_xPos = xPos;
+        // s_yPos = yPos;
+        // s_isDragging = s_currentButtonsDown[0] || s_currentButtonsDown[1] || s_currentButtonsDown[2];
+
+        if (s_lastMoveFrame != s_currentFrame)
+        {
+            s_dx = xPos - s_xPos;
+            s_dy = yPos - s_yPos;
+            s_lastMoveFrame = s_currentFrame;
+        }
+        else
+        {
+            // handles high polling mice
+            s_dx += xPos - s_xPos;
+            s_dy += yPos - s_yPos;
+        }
+
         s_xPos = xPos;
         s_yPos = yPos;
-        s_isDragging = s_currentButtonsDown[0] || s_currentButtonsDown[1] || s_currentButtonsDown[2];
     }
 
     void MouseListener::s_handleMouseButtonEvent(MouseButton button, Action action)
@@ -44,33 +83,45 @@ namespace Gas {
 
         int index = static_cast<int>(button);
 
-        // TODO: Will have to test mice with more buttons
-        // if && button != MouseButton::Unknown doesnt try
-        // if (index < mouseButtonPressed.size())
+        // TODO: check this code for real to handle more than normal amount of mouse buttons
+        if (button == MouseButton::Unknown || index >= s_currentButtonsDown.size() || index < 0)
+        {
+            std::cout << "WARNING: Unknown mouse button detected!\n";
+            return;
+        }
+
         if (action == Action::Press)
         {
-            if (button != MouseButton::Unknown)
-                s_currentButtonsDown[index] = true;
+            s_currentButtonsDown[index] = true;
+            s_lastPressedFrame[index] = s_currentFrame;
         }
         else if (action == Action::Release)
         {
-            if (button != MouseButton::Unknown)
-            {
-                s_currentButtonsDown[index] = false;
-                s_isDragging = false;
-            }
+            s_currentButtonsDown[index] = false;
+            s_lastReleasedFrame[index] = s_currentFrame;
         }
     }
 
     void MouseListener::s_handleMouseScrollEvent(float xOffset, float yOffset)
     {
-        s_scrollX = xOffset;
-        s_scrollY = yOffset;
+        if (s_lastScrollFrame != s_currentFrame)
+        {
+            s_scrollX = xOffset;
+            s_scrollY = yOffset;
+            s_lastScrollFrame = s_currentFrame;
+        }
+        else
+        {
+            // accumulate if wheel spins really fast in single frame
+            s_scrollX += xOffset;
+            s_scrollY += yOffset;
+        }
     }
 
-    bool MouseListener::isDragging()
+    bool MouseListener::isDragging(MouseButton button)
     {
-        return s_isDragging;
+        bool buttonDragging = s_currentButtonsDown[static_cast<int>(button)];
+        return buttonDragging && (s_lastMoveFrame == s_currentFrame);
     }
 
     // TODO: Will have to test mice with more buttons
@@ -80,35 +131,36 @@ namespace Gas {
     // MAY WANT TO STILL PROCESS INPUT FROM UNKNOWN BUTTONS
     bool MouseListener::isMouseButtonDown(MouseButton button)
     {
-        if (button != MouseButton::Unknown)
-            return s_currentButtonsDown[static_cast<int>(button)];
-        
+        int index = static_cast<int>(button);
+        if (button != MouseButton::Unknown && index < s_currentButtonsDown.size())
+            return s_currentButtonsDown[index];
+
         return false;
     }
 
     bool MouseListener::isMouseButtonPressed(MouseButton button)
     {
         int index = static_cast<int>(button);
-        if (button != MouseButton::Unknown)
-            return s_currentButtonsDown[index] && !s_previousButtonsDown[index];
-        
+        if (button != MouseButton::Unknown && index < s_lastPressedFrame.size())
+            return s_lastPressedFrame[index] == s_currentFrame;
+
         return false;
     }
 
     bool MouseListener::isMouseButtonReleased(MouseButton button)
     {
         int index = static_cast<int>(button);
-        if (button != MouseButton::Unknown)
-            return !s_currentButtonsDown[index] && s_previousButtonsDown[index];
-        
+        if (button != MouseButton::Unknown && index < s_lastReleasedFrame.size())
+            return s_lastReleasedFrame[index] == s_currentFrame;
+
         return false;
     }
 
     float MouseListener::getX()       { return s_xPos; }
     float MouseListener::getY()       { return s_yPos; }
-    float MouseListener::getDx()      { return s_xPos - s_lastX; }
-    float MouseListener::getDy()      { return s_yPos - s_lastY; }
-    float MouseListener::getScrollX() { return s_scrollX; }
-    float MouseListener::getScrollY() { return s_scrollY; }
+    float MouseListener::getDx()      { return (s_lastMoveFrame == s_currentFrame) ? s_dx : 0.0f; }
+    float MouseListener::getDy()      { return (s_lastMoveFrame == s_currentFrame) ? s_dy : 0.0f; }
+    float MouseListener::getScrollX() { return (s_lastScrollFrame == s_currentFrame) ? s_scrollX : 0.0f; }
+    float MouseListener::getScrollY() { return (s_lastScrollFrame == s_currentFrame) ? s_scrollY : 0.0f; }
 
 }

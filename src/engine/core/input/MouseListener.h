@@ -14,6 +14,7 @@ namespace Gas {
         static void update();
 
         static bool isDragging();
+        static bool isDragging(MouseButton button);
 
         static bool isMouseButtonDown(MouseButton button);
         static bool isMouseButtonPressed(MouseButton button);
