@@ -19,7 +19,9 @@
 
 int main()
 {
-    GAS_TRACE("Hello World! %s", "Welcome to the game!");
+    GAS_TRACE("Hello World! {}", "Welcome to the game!");
+    GAS_WARN("Fah");
+    GAS_ERROR("Uh oh {} {}", 1, 2);
     Gas::Platform::init();
 
     Gas::Window window(800, 600, "Game");

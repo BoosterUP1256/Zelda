@@ -2,6 +2,7 @@
 #include <array>
 #include <cstdint>
 #include <cstdio>
+#include <format>
 
 namespace Gas {
 
@@ -51,13 +52,18 @@ namespace Gas {
                 "\x1b[97m", // Bright White
             };
 
-            std::array<char, 8192> formatBuffer {};
-            sprintf(formatBuffer.data(), "%s %s %s \033[m", textColorTable[static_cast<int>(color)], prefix, message);
+            // std::array<char, 8192> formatBuffer {};
+            // sprintf(formatBuffer.data(), "%s %s %s \x1b[m", textColorTable[static_cast<int>(color)], prefix, message);
+            //
+            // std::array<char, 8192> textBuffer {};
+            // sprintf(textBuffer.data(), formatBuffer.data(), args...);
+            //
+            // puts(textBuffer.data());
 
-            std::array<char, 8192> textBuffer {};
-            sprintf(textBuffer.data(), formatBuffer.data(), args...);
+            std::string formatString = std::format("{} {} {} \x1b[m", textColorTable[static_cast<int>(color)], prefix, message);
+            std::string text = std::vformat(formatString, std::make_format_args(args...));
 
-            puts(textBuffer.data());
+            puts(text.c_str());
         }
     };
 
