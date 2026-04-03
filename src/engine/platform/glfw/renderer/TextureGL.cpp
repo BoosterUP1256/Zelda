@@ -46,6 +46,7 @@ namespace Gas {
     void Texture::bind(const uint32_t slot) const
     {
         glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, _rendererId);
     }
 
     void Texture::unbind() const

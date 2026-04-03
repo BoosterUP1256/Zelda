@@ -47,7 +47,7 @@ int main()
 
     Gas::Shader shader("../src/res/shaders/basic.glsl");
     shader.bind();
-    shader.setUniform4f("u_color", 0.2f, 0.3f, 0.8f, 1.0f);
+    //shader.setUniform4f("u_color", 0.2f, 0.3f, 0.8f, 1.0f);
 
     const Gas::Texture texture("../src/res/textures/funny_face.png");
     texture.bind();
