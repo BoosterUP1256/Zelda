@@ -52,14 +52,6 @@ namespace Gas {
                 "\x1b[97m", // Bright White
             };
 
-            // std::array<char, 8192> formatBuffer {};
-            // sprintf(formatBuffer.data(), "%s %s %s \x1b[m", textColorTable[static_cast<int>(color)], prefix, message);
-            //
-            // std::array<char, 8192> textBuffer {};
-            // sprintf(textBuffer.data(), formatBuffer.data(), args...);
-            //
-            // puts(textBuffer.data());
-
             std::string formatString = std::format("{} {} {} \x1b[m", textColorTable[static_cast<int>(color)], prefix, message);
             std::string text = std::vformat(formatString, std::make_format_args(args...));
 
@@ -72,3 +64,24 @@ namespace Gas {
 #define GAS_TRACE(msg, ...) Gas::Logger::s_log("TRACE: ", msg, Gas::Logger::TextColor::Green, ##__VA_ARGS__)
 #define GAS_WARN(msg, ...)  Gas::Logger::s_log("WARN: ", msg, Gas::Logger::TextColor::Yellow, ##__VA_ARGS__)
 #define GAS_ERROR(msg, ...) Gas::Logger::s_log("ERROR: ", msg, Gas::Logger::TextColor::Red, ##__VA_ARGS__)
+
+// TODO: possibly add ifdefs for multiplatform support
+// windows
+#define DEBUG_BREAK() __debugbreak()
+
+// linux
+// #define DEBUG_BREAK() __builtin_debugtrap()
+
+// mac
+// #define DEBUG_BREAK() __builtin_trap()
+
+// TODO: Add macro to strip on release build
+
+#define GAS_ASSERT(x, msg, ...)         \
+{                                       \
+    if (!(x))                           \
+    {                                   \
+        GAS_ERROR(msg, ##__VA_ARGS__);   \
+        DEBUG_BREAK();                  \
+    }                                   \
+}                                       \

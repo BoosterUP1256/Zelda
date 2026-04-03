@@ -22,6 +22,7 @@ int main()
     GAS_TRACE("Hello World! {}", "Welcome to the game!");
     GAS_WARN("Fah");
     GAS_ERROR("Uh oh {} {}", 1, 2);
+    GAS_ASSERT(false, "Assert test");
     Gas::Platform::init();
 
     Gas::Window window(800, 600, "Game");
