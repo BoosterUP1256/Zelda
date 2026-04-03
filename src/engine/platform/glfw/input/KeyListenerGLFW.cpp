@@ -2,22 +2,29 @@
 #include "InputCodesGLFW.h"
 
 #include <array>
+#include <cstdint>
 
 namespace Gas {
 
-    // TODO: Implement frame stamping
-
-    static std::array<bool, static_cast<int>(Key::Count)> s_currentKeysDown  {};
-    static std::array<bool, static_cast<int>(Key::Count)> s_previousKeysDown {};
+    static uint64_t                                           s_currentFrame      = 0;
+    static std::array<uint64_t, static_cast<int>(Key::Count)> s_lastPressedFrame  { 0 };
+    static std::array<uint64_t, static_cast<int>(Key::Count)> s_lastReleasedFrame { 0 };
+    static std::array<bool, static_cast<int>(Key::Count)>     s_currentKeysDown   { false };
 
     void KeyListener::s_handleKeyEvent(Key key, Action action)
     {
         const int index = static_cast<int>(key);
 
-        if (action == Action::Press || action == Action::Repeat)
+        if (action == Action::Press )
+        {
             s_currentKeysDown[index] = true;
+            s_lastPressedFrame[index] = s_currentFrame;
+        }
         else if (action == Action::Release)
+        {
             s_currentKeysDown[index] = false;
+            s_lastReleasedFrame[index] = s_currentFrame;
+        }
     }
 
     void KeyListener::init()
@@ -27,7 +34,7 @@ namespace Gas {
 
     void KeyListener::update()
     {
-        s_previousKeysDown = s_currentKeysDown;
+        s_currentFrame++;
     }
 
     bool KeyListener::isKeyDown(Key key)
@@ -37,12 +44,12 @@ namespace Gas {
 
     bool KeyListener::isKeyPressed(Key key)
     {
-        return s_currentKeysDown[static_cast<int>(key)] && !s_previousKeysDown[static_cast<int>(key)];
+        return s_lastPressedFrame[static_cast<int>(key)] == s_currentFrame;
     }
 
     bool KeyListener::isKeyReleased(Key key)
     {
-        return !s_currentKeysDown[static_cast<int>(key)] && s_previousKeysDown[static_cast<int>(key)];
+        return s_lastReleasedFrame[static_cast<int>(key)] == s_currentFrame;
     }
 
 }
