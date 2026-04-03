@@ -15,9 +15,11 @@
 
 #include "core/renderer/Renderer.h"
 #include "core/renderer/Texture.h"
+#include "core/Logger.h"
 
 int main()
 {
+    GAS_TRACE("Hello World! %s", "Welcome to the game!");
     Gas::Platform::init();
 
     Gas::Window window(800, 600, "Game");
