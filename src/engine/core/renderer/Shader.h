@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <unordered_map>
 
+#include "core/math/Mat4.h"
+
 namespace Gas {
     struct ShaderProgramSource
     {
@@ -27,7 +29,7 @@ namespace Gas {
         void setUniform1i(std::string_view name, int value);
         void setUniform1f(std::string_view name, float value);
         void setUniform4f(std::string_view name, float f0, float f1, float f2, float f3);
-        void setUniformMat4f(std::string_view name, const Gas::mat4& matrix);
+        void setUniformMat4f(std::string_view name, const Mat4f& matrix);
 
 
     private:

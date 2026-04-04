@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <cmath>
 
 namespace Gas {
 
@@ -17,6 +18,7 @@ namespace Gas {
                   m31, m32, m33, m34,
                   m41, m42, m43, m44;
             };
+
             T m[4][4];
         };
 
@@ -32,6 +34,14 @@ namespace Gas {
         // converting constructor
         template <typename U>
         explicit Mat4(const Mat4<U>& other);
+
+        // common named constructors
+        static Mat4 Identity();
+        static Mat4 Translate(T tx, T ty, T tz);
+        static Mat4 Scale(T sx, T sy, T sz);
+        static Mat4 RotateX(T angleRadians);
+        static Mat4 RotateY(T angleRadians);
+        static Mat4 RotateZ(T angleRadians);
 
         // equality operators
         bool operator==(const Mat4& rhs) const;
@@ -73,7 +83,7 @@ namespace Gas {
 
     template <typename T>
     Mat4<T>::Mat4(T diagonal)
-        : m{ {0} }
+        : m{ {static_cast<T>(0)} }
     {
         m11 = diagonal;
         m22 = diagonal;
@@ -94,6 +104,85 @@ namespace Gas {
              {static_cast<T>(other.m21), static_cast<T>(other.m22), static_cast<T>(other.m23), static_cast<T>(other.m24)},
              {static_cast<T>(other.m31), static_cast<T>(other.m32), static_cast<T>(other.m33), static_cast<T>(other.m34)},
              {static_cast<T>(other.m41), static_cast<T>(other.m42), static_cast<T>(other.m43), static_cast<T>(other.m44)} } {}
+
+    template <typename T>
+    Mat4<T> Mat4<T>::Identity()
+    {
+        return Mat4(static_cast<T>(1));
+    }
+
+    template <typename T>
+    Mat4<T> Mat4<T>::Translate(T tx, T ty, T tz)
+    {
+        auto matrix = Mat4::Identity();
+
+        matrix.m14 = static_cast<T>(tx);
+        matrix.m24 = static_cast<T>(ty);
+        matrix.m34 = static_cast<T>(tz);
+
+        return matrix;
+    }
+
+    template <typename T>
+    Mat4<T> Mat4<T>::Scale(T sx, T sy, T sz)
+    {
+        auto matrix = Mat4::Identity();
+
+        matrix.m11 = static_cast<T>(sx);
+        matrix.m22 = static_cast<T>(sy);
+        matrix.m33 = static_cast<T>(sz);
+        matrix.m44 = static_cast<T>(1);
+
+        return matrix;
+    }
+
+    template <typename T>
+    Mat4<T> Mat4<T>::RotateX(T angleRadians)
+    {
+        auto matrix = Mat4::Identity();
+
+        T cosine = std::cos(angleRadians);
+        T sine = std::sin(angleRadians);
+
+        matrix.m22 = cosine;
+        matrix.m23 = -sine;
+        matrix.m32 = sine;
+        matrix.m33 = cosine;
+
+        return matrix;
+    }
+
+    template <typename T>
+    Mat4<T> Mat4<T>::RotateY(T angleRadians)
+    {
+        auto matrix = Mat4::Identity();
+
+        T cosine = std::cos(angleRadians);
+        T sine = std::sin(angleRadians);
+
+        matrix.m11 = cosine;
+        matrix.m13 = sine;
+        matrix.m31 = -sine;
+        matrix.m33 = cosine;
+
+        return matrix;
+    }
+
+    template <typename T>
+    Mat4<T> Mat4<T>::RotateZ(T angleRadians)
+    {
+        auto matrix = Mat4::Identity();
+
+        T cosine = std::cos(angleRadians);
+        T sine = std::sin(angleRadians);
+
+        matrix.m11 = cosine;
+        matrix.m12 = -sine;
+        matrix.m21 = sine;
+        matrix.m22 = cosine;
+
+        return matrix;
+    }
 
     template <typename T>
     bool Mat4<T>::operator==(const Mat4& rhs) const
@@ -224,7 +313,7 @@ namespace Gas {
     template <typename T>
     Mat4<T> Mat4<T>::operator+(const Mat4& rhs) const
     {
-        Mat4<T> result = *this;
+        Mat4 result = *this;
         result += rhs;
         return result;
     }
@@ -232,7 +321,7 @@ namespace Gas {
     template <typename T>
     Mat4<T> Mat4<T>::operator-(const Mat4& rhs) const
     {
-        Mat4<T> result = *this;
+        Mat4 result = *this;
         result -= rhs;
         return result;
     }
@@ -270,7 +359,7 @@ namespace Gas {
     template <typename T>
     Mat4<T> Mat4<T>::operator*(T scalar) const
     {
-        Mat4<T> result = *this;
+        Mat4 result = *this;
         result *= scalar;
         return result;
     }
@@ -278,9 +367,16 @@ namespace Gas {
     template <typename T>
     Mat4<T> Mat4<T>::operator/(T scalar) const
     {
-        Mat4<T> result = *this;
+        Mat4 result = *this;
         result /= scalar;
         return result;
     }
+
+    // -- common aliases --
+
+    using Mat4i  = Mat4<int32_t>;
+    using Mat4ui = Mat4<uint32_t>;
+    using Mat4f  = Mat4<float>;
+    using Mat4d  = Mat4<double>;
 
 }

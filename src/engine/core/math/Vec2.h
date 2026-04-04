@@ -2,6 +2,7 @@
 
 #include <ostream>
 #include <cmath>
+#include <cstdint>
 
 // TODO (FUTURE): add Lerp static method
 //      add isNearlyEqual method (epsilon comparison)
@@ -21,7 +22,7 @@ namespace Gas {
         explicit Vec2(const Vec2<U>& other);
 
         // common named constructors
-        static Vec2 zero();
+        static Vec2 Zero();
 
         // equality operators
         bool operator==(const Vec2& rhs) const;
@@ -73,7 +74,7 @@ namespace Gas {
         : x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {}
 
     template<typename T>
-    Vec2<T> Vec2<T>::zero()
+    Vec2<T> Vec2<T>::Zero()
     {
         return Vector2<T>(static_cast<T>(0), static_cast<T>(0));
     }
@@ -195,5 +196,12 @@ namespace Gas {
 
         return { static_cast<T>(0), static_cast<T>(0) };
     }
+
+    // -- common aliases --
+
+    using Vec2i  = Vec2<int32_t>;
+    using Vec2ui = Vec2<uint32_t>;
+    using Vec2f  = Vec2<float>;
+    using Vec2d  = Vec2<double>;
 
 }
