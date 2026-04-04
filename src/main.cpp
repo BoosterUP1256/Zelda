@@ -50,9 +50,12 @@ int main()
 
     Gas::IndexBuffer ibo(indices, 6);
 
+    // mat4 proj = gas::ortho(-2.0f, 2.0f, -1.5, 1.5, -1.0f, 1.0f);
+
     Gas::Shader shader("../src/res/shaders/basic.glsl");
     shader.bind();
     shader.setUniform4f("u_tint", 1.0, 0.71, 0.76, 1.0);
+    //shader.setUniformMat4f("u_mvp", proj);
 
     const Gas::Texture texture("../src/res/textures/funny_face.png");
     texture.bind();

@@ -51,6 +51,12 @@ namespace Gas {
         glUniform4f(_getUniformLocation(name), f0, f1, f2, f3);
     }
 
+    void Shader::setUniformMat4f(const std::string_view name, const Gas::mat4& matrix)
+    {
+        // TODO: Might have to change transpose to GL_TRUE if I implement row major matrix
+        glUniformMatrix4fv(_getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+    }
+
     // TODO: preallocate memory for strings
     std::string Shader::_readFile(const std::string_view filePath) {
         std::ifstream stream{std::string(filePath)};

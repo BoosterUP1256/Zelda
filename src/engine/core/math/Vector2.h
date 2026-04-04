@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <cmath>
 
 // TODO (FUTURE): add Lerp static method
 //      add isNearlyEqual method (epsilon comparison)
@@ -9,129 +10,190 @@
 namespace Gas {
 
     template <typename T>
-    struct Vector2
+    struct Vec2
     {
         T x, y;
 
-        Vector2(T x, T y);
+        Vec2(T x, T y);
 
         // converting constructor
         template <typename U>
-        explicit Vector2(const Vector2<U>& other);
+        explicit Vec2(const Vec2<U>& other);
 
         // common named constructors
-        static Vector2 zero();
+        static Vec2 zero();
 
         // equality operators
-        bool operator==(const Vector2& rhs) const;
-        bool operator!=(const Vector2& rhs) const;
+        bool operator==(const Vec2& rhs) const;
+        bool operator!=(const Vec2& rhs) const;
 
-        // math operators
-        Vector2 operator+(const Vector2& rhs) const;
-        Vector2 operator-(const Vector2& rhs) const;
-        Vector2 operator*(T scalar) const;
-        Vector2 operator/(T scalar) const;
+        // compound assignment operators (modifies in-place)
+        Vec2& operator+=(const Vec2& rhs);
+        Vec2& operator-=(const Vec2& rhs);
+        Vec2& operator*=(T scalar);
+        Vec2& operator/=(T scalar);
+
+        // math operators (returns new vector)
+        Vec2 operator+(const Vec2& rhs) const;
+        Vec2 operator-(const Vec2& rhs) const;
+        Vec2 operator*(T scalar) const;
+        Vec2 operator/(T scalar) const;
+
+        // left-hand scalar multiplication (e.g., 5.0f * vector)
+        // Implemented inline to avoid template linker issues with friends
+        friend Vec2 operator*(T scalar, const Vec2& vector)
+        {
+            return vector * scalar; // Reuses our operator*(T scalar) const
+        }
 
         // utilities
-        static T dot(const Vector2& lhs, const Vector2& rhs);
-        T dot(const Vector2& other) const;
+        static T dot(const Vec2& lhs, const Vec2& rhs);
+        T dot(const Vec2& other) const;
         [[nodiscard]] double length() const;
         T lengthSquared() const;
-        Vector2 normalized() const;
+        Vec2 normalized() const;
 
         // debug printing
-        friend std::ostream& operator<<(std::ostream& os, const Vector2& vector);
+        // Implemented inline to avoid template linker issues with friends
+        friend std::ostream& operator<<(std::ostream& os, const Vec2& vector)
+        {
+            os << "(" << vector.x << ", " << vector.y << ")";
+            return os;
+        }
     };
 
-    // implementation
+    // --- implementation ---
+
     template<typename T>
-    Vector2<T>::Vector2(T x, T y) : x(x), y(y) {}
+    Vec2<T>::Vec2(T x, T y) : x(x), y(y) {}
 
     template<typename T>
     template<typename U>
-    Vector2<T>::Vector2(const Vector2<U> &other)
+    Vec2<T>::Vec2(const Vec2<U> &other)
         : x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {}
 
     template<typename T>
-    Vector2<T> Vector2<T>::zero()
+    Vec2<T> Vec2<T>::zero()
     {
         return Vector2<T>(static_cast<T>(0), static_cast<T>(0));
     }
 
     template<typename T>
-    bool Vector2<T>::operator==(const Vector2 &rhs) const
+    bool Vec2<T>::operator==(const Vec2 &rhs) const
     {
         return x == rhs.x && y == rhs.y;
     }
 
     template<typename T>
-    bool Vector2<T>::operator!=(const Vector2 &rhs) const
+    bool Vec2<T>::operator!=(const Vec2 &rhs) const
     {
         return x != rhs.x || y != rhs.y;
     }
 
+    // --- Compound Assignment Operators ---
+
     template<typename T>
-    Vector2<T> Vector2<T>::operator+(const Vector2 &rhs) const
+    Vec2<T>& Vec2<T>::operator+=(const Vec2 &rhs)
     {
-        return { x + rhs.x, y + rhs.y };
+        x += rhs.x;
+        y += rhs.y;
+        return *this;
     }
 
     template<typename T>
-    Vector2<T> Vector2<T>::operator-(const Vector2 &rhs) const
+    Vec2<T>& Vec2<T>::operator-=(const Vec2 &rhs)
     {
-        return { x - rhs.x, y - rhs.y };
+        x -= rhs.x;
+        y -= rhs.y;
+        return *this;
     }
 
     template<typename T>
-    Vector2<T> Vector2<T>::operator*(T scalar) const
+    Vec2<T>& Vec2<T>::operator*=(T scalar)
     {
-        return { x * scalar, y * scalar };
+        x *= scalar;
+        y *= scalar;
+        return *this;
     }
 
     template<typename T>
-    Vector2<T> Vector2<T>::operator/(T scalar) const
+    Vec2<T>& Vec2<T>::operator/=(T scalar)
     {
-        return { x / scalar, y / scalar };
+        x /= scalar;
+        y /= scalar;
+        return *this;
+    }
+
+    // --- Math Operators (Implemented using compound assignment) ---
+
+    template<typename T>
+    Vec2<T> Vec2<T>::operator+(const Vec2 &rhs) const
+    {
+        Vec2<T> result = *this;
+        result += rhs;
+        return result;
     }
 
     template<typename T>
-    T Vector2<T>::dot(const Vector2 &lhs, const Vector2 &rhs)
+    Vec2<T> Vec2<T>::operator-(const Vec2 &rhs) const
+    {
+        Vec2<T> result = *this;
+        result -= rhs;
+        return result;
+    }
+
+    template<typename T>
+    Vec2<T> Vec2<T>::operator*(T scalar) const
+    {
+        Vec2<T> result = *this;
+        result *= scalar;
+        return result;
+    }
+
+    template<typename T>
+    Vec2<T> Vec2<T>::operator/(T scalar) const
+    {
+        Vec2<T> result = *this;
+        result /= scalar;
+        return result;
+    }
+
+    // --- Utilities ---
+
+    template<typename T>
+    T Vec2<T>::dot(const Vec2 &lhs, const Vec2 &rhs)
     {
         return lhs.x * rhs.x + lhs.y * rhs.y;
     }
 
     template<typename T>
-    T Vector2<T>::dot(const Vector2 &other) const
+    T Vec2<T>::dot(const Vec2 &other) const
     {
         return x * other.x + y * other.y;
     }
 
     template<typename T>
-    double Vector2<T>::length() const
+    double Vec2<T>::length() const
     {
-        return sqrt(x * x + y * y);
+        return std::sqrt(x * x + y * y);
     }
 
     template<typename T>
-    T Vector2<T>::lengthSquared() const
+    T Vec2<T>::lengthSquared() const
     {
         return x * x + y * y;
     }
 
     template<typename T>
-    Vector2<T> Vector2<T>::normalized() const
+    Vec2<T> Vec2<T>::normalized() const
     {
         if (const double len = length(); len > 0)
-            return *this * (1.0 / len);
+        {
+            // Multiplying by reciprocal is generally faster than dividing
+            return *this * static_cast<T>(1.0 / len);
+        }
 
-        return { 0, 0 };
-    }
-
-    template<typename T>
-    std::ostream& operator<<(std::ostream& os, const Vector2<T>& vector)
-    {
-        os << "(" << vector.x << ", " << vector.y << ")";
-        return os;
+        return { static_cast<T>(0), static_cast<T>(0) };
     }
 
 }
