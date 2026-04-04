@@ -77,11 +77,14 @@ namespace Gas {
 
 // TODO: Add macro to strip on release build
 
-#define GAS_ASSERT(x, msg, ...)         \
-{                                       \
-    if (!(x))                           \
-    {                                   \
-        GAS_ERROR(msg, ##__VA_ARGS__);   \
-        DEBUG_BREAK();                  \
-    }                                   \
-}                                       \
+#define GAS_STRINGIFY_IMPL(x) #x
+#define GAS_STRINGIFY(x) GAS_STRINGIFY_IMPL(x)
+
+#define GAS_ASSERT(x, msg, ...)                                                                                 \
+{                                                                                                               \
+    if (!(x))                                                                                                   \
+    {                                                                                                           \
+    GAS_ERROR("Assertion Failed [" __FILE__ ":" GAS_STRINGIFY(__LINE__) "] - " msg __VA_OPT__(,) __VA_ARGS__);  \
+    DEBUG_BREAK();                                                                                              \
+    }                                                                                                           \
+}
