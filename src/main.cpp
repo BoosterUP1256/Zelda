@@ -54,7 +54,7 @@ int main()
 
     //Gas::Mat4f transform = Gas::Mat4f::Translate(0.5f, -0.5f, 0.0f);
     //Gas::Mat4f transform = Gas::Mat4f::Scale(2.0f, 2.0f, 1.0f);
-    Gas::Mat4 transform = Gas::Mat4f::RotateZ(0.436332f);
+    Gas::Mat4 transform = Gas::Mat4f::RotateZ(0.436332f) + Gas::Mat4f::Translate(0.5f, -0.5f, 0.0f);
 
     Gas::Shader shader("../src/res/shaders/basic.glsl");
     shader.bind();

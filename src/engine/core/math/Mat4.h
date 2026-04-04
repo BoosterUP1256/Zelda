@@ -42,6 +42,7 @@ namespace Gas {
         static Mat4 RotateX(T angleRadians);
         static Mat4 RotateY(T angleRadians);
         static Mat4 RotateZ(T angleRadians);
+        // TODO: Add shear for 3D
 
         // equality operators
         bool operator==(const Mat4& rhs) const;
