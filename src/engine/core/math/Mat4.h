@@ -26,9 +26,13 @@ namespace Gas {
              T x31, T x32, T x33, T x34,
              T x41, T x42, T x43, T x44);
 
-        Mat4(T diagonal = static_cast<T>(1));
+        explicit Mat4(T diagonal = static_cast<T>(1));
 
         explicit Mat4(const T* data);
+
+        // converting constructor
+        template <typename U>
+        explicit Mat4(const Mat4<U>& other);
     };
 
     // -- implementation --
@@ -59,4 +63,11 @@ namespace Gas {
         memcpy(m, data, 16 * sizeof(T));
     }
 
+    template <typename T>
+    template <typename U>
+    Mat4<T>::Mat4(const Mat4<U>& other)
+        : m{ {static_cast<T>(other.m11), static_cast<T>(other.m12), static_cast<T>(other.m13), static_cast<T>(other.m14)},
+             {static_cast<T>(other.m21), static_cast<T>(other.m22), static_cast<T>(other.m23), static_cast<T>(other.m24)},
+             {static_cast<T>(other.m31), static_cast<T>(other.m32), static_cast<T>(other.m33), static_cast<T>(other.m34)},
+             {static_cast<T>(other.m41), static_cast<T>(other.m42), static_cast<T>(other.m43), static_cast<T>(other.m44)} } {}
 }
