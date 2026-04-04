@@ -73,7 +73,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/engine/core/renderer/Renderer.h
         src/engine/core/renderer/Texture.h
         src/engine/core/Logger.h
-        src/engine/core/math/Vector2.h)
+        src/engine/core/math/Vec2.h
+        src/engine/core/math/Mat4.h)
 
 # Now you only need to link against the engine!
 target_link_libraries(${PROJECT_NAME} PRIVATE engine)
