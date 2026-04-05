@@ -28,10 +28,11 @@ int main()
     Gas::Window window(800, 600, "Game");
 
     constexpr float points[] = {
-        0.5f,  0.5f, 0.0f,      1.0f, 1.0f,   // top right
-        0.5f, -0.5f, 0.0f,      1.0f, 0.0f,   // bottom right
-       -0.5f, -0.5f, 0.0f,      0.0f, 0.0f,   // bottom left
-       -0.5f,  0.5f, 0.0f,      0.0f, 1.0f    // top left
+        // Position          // TexCoord    // Color (R, G, B)
+        0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   1.0f, 0.0f, 0.0f,   // top right
+        0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   0.0f, 0.0f, 1.0f,   // bottom left
+       -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,   1.0f, 1.0f, 0.0f    // top left
     };
 
     constexpr GLuint indices[] = {
@@ -46,6 +47,7 @@ int main()
 
     layout.push<float>(3);
     layout.push<float>(2);
+    layout.push<float>(3);
     vao.addBuffer(vbo, layout);
 
     Gas::IndexBuffer ibo(indices, 6);
