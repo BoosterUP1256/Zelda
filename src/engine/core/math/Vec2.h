@@ -13,7 +13,12 @@ namespace Gas {
     template <typename T>
     struct Vec2
     {
-        T x, y;
+        // NOTE uses union type punning not standard c++
+        union
+        {
+            struct { T x, y; };
+            T data[2];
+        };
 
         Vec2(T x, T y);
 
@@ -48,11 +53,11 @@ namespace Gas {
         }
 
         // utilities
-        static T dot(const Vec2& lhs, const Vec2& rhs);
-        T dot(const Vec2& other) const;
+        [[nodiscard]] static T dot(const Vec2& lhs, const Vec2& rhs);
+        [[nodiscard]] T dot(const Vec2& other) const;
         [[nodiscard]] double length() const;
-        T lengthSquared() const;
-        Vec2 normalized() const;
+        [[nodiscard]] T lengthSquared() const;
+        [[nodiscard]] Vec2 normalized() const;
 
         // debug printing
         // Implemented inline to avoid template linker issues with friends
@@ -76,8 +81,10 @@ namespace Gas {
     template<typename T>
     Vec2<T> Vec2<T>::Zero()
     {
-        return Vector2<T>(static_cast<T>(0), static_cast<T>(0));
+        return Vec2(static_cast<T>(0), static_cast<T>(0));
     }
+
+    // --- Equality Operators ---
 
     template<typename T>
     bool Vec2<T>::operator==(const Vec2 &rhs) const
@@ -130,7 +137,7 @@ namespace Gas {
     template<typename T>
     Vec2<T> Vec2<T>::operator+(const Vec2 &rhs) const
     {
-        Vec2<T> result = *this;
+        Vec2 result = *this;
         result += rhs;
         return result;
     }
@@ -138,7 +145,7 @@ namespace Gas {
     template<typename T>
     Vec2<T> Vec2<T>::operator-(const Vec2 &rhs) const
     {
-        Vec2<T> result = *this;
+        Vec2 result = *this;
         result -= rhs;
         return result;
     }
@@ -146,7 +153,7 @@ namespace Gas {
     template<typename T>
     Vec2<T> Vec2<T>::operator*(T scalar) const
     {
-        Vec2<T> result = *this;
+        Vec2 result = *this;
         result *= scalar;
         return result;
     }
@@ -154,7 +161,7 @@ namespace Gas {
     template<typename T>
     Vec2<T> Vec2<T>::operator/(T scalar) const
     {
-        Vec2<T> result = *this;
+        Vec2 result = *this;
         result /= scalar;
         return result;
     }
