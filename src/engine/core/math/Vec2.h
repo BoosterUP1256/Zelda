@@ -3,10 +3,10 @@
 #include <ostream>
 #include <cmath>
 #include <cstdint>
+#include <limits>
+#include <type_traits>
 
 // TODO (FUTURE): add Lerp static method
-//      add isNearlyEqual method (epsilon comparison)
-//
 
 namespace Gas {
 
@@ -20,43 +20,57 @@ namespace Gas {
             T data[2];
         };
 
-        Vec2(T x, T y);
+        constexpr Vec2();
+        constexpr Vec2(T x, T y);
 
         // converting constructor
         template <typename U>
-        explicit Vec2(const Vec2<U>& other);
+        constexpr explicit Vec2(const Vec2<U>& other);
 
         // common named constructors
-        static Vec2 Zero();
+        constexpr static Vec2 Zero();
+
+        // array access operators
+        constexpr T& operator[](size_t index);
+        constexpr const T& operator[](size_t index) const;
+
+        // unary negation operator
+        constexpr Vec2 operator-() const;
 
         // equality operators
-        bool operator==(const Vec2& rhs) const;
-        bool operator!=(const Vec2& rhs) const;
+        constexpr bool operator==(const Vec2& rhs) const;
+        constexpr bool operator!=(const Vec2& rhs) const;
+
+        // is approximately equal comparisons for floating point numbers
+        [[nodiscard]] static bool approxEqual(const Vec2& lhs, const Vec2& rhs,
+            T tolerance = std::numeric_limits<T>::epsilon() * 100);
+
+        [[nodiscard]] bool isApprox(const Vec2& other, T tolerance = std::numeric_limits<T>::epsilon() * 100) const;
 
         // compound assignment operators (modifies in-place)
-        Vec2& operator+=(const Vec2& rhs);
-        Vec2& operator-=(const Vec2& rhs);
-        Vec2& operator*=(T scalar);
-        Vec2& operator/=(T scalar);
+        constexpr Vec2& operator+=(const Vec2& rhs);
+        constexpr Vec2& operator-=(const Vec2& rhs);
+        constexpr Vec2& operator*=(T scalar);
+        constexpr Vec2& operator/=(T scalar);
 
         // math operators (returns new vector)
-        Vec2 operator+(const Vec2& rhs) const;
-        Vec2 operator-(const Vec2& rhs) const;
-        Vec2 operator*(T scalar) const;
-        Vec2 operator/(T scalar) const;
+        constexpr Vec2 operator+(const Vec2& rhs) const;
+        constexpr Vec2 operator-(const Vec2& rhs) const;
+        constexpr Vec2 operator*(T scalar) const;
+        constexpr Vec2 operator/(T scalar) const;
 
         // left-hand scalar multiplication (e.g., 5.0f * vector)
         // Implemented inline to avoid template linker issues with friends
-        friend Vec2 operator*(T scalar, const Vec2& vector)
+        constexpr friend Vec2 operator*(T scalar, const Vec2& vector)
         {
             return vector * scalar; // Reuses our operator*(T scalar) const
         }
 
         // utilities
-        [[nodiscard]] static T dot(const Vec2& lhs, const Vec2& rhs);
-        [[nodiscard]] T dot(const Vec2& other) const;
-        [[nodiscard]] double length() const;
-        [[nodiscard]] T lengthSquared() const;
+        [[nodiscard]] constexpr static T dot(const Vec2& lhs, const Vec2& rhs);
+        [[nodiscard]] constexpr T dot(const Vec2& other) const;
+        [[nodiscard]] constexpr auto length() const;
+        [[nodiscard]] constexpr T lengthSquared() const;
         [[nodiscard]] Vec2 normalized() const;
 
         // debug printing
@@ -70,38 +84,85 @@ namespace Gas {
 
     // --- implementation ---
 
+    template <typename T>
+    constexpr Vec2<T>::Vec2() : x(0), y(0) {}
+
     template<typename T>
-    Vec2<T>::Vec2(T x, T y) : x(x), y(y) {}
+    constexpr Vec2<T>::Vec2(T x, T y) : x(x), y(y) {}
 
     template<typename T>
     template<typename U>
-    Vec2<T>::Vec2(const Vec2<U> &other)
+    constexpr Vec2<T>::Vec2(const Vec2<U> &other)
         : x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {}
 
     template<typename T>
-    Vec2<T> Vec2<T>::Zero()
+    constexpr Vec2<T> Vec2<T>::Zero()
     {
-        return Vec2(static_cast<T>(0), static_cast<T>(0));
+        return Vec2();
+    }
+
+    template <typename T>
+    constexpr T& Vec2<T>::operator[](size_t index)
+    {
+        return data[index];
+    }
+
+    template <typename T>
+    constexpr const T& Vec2<T>::operator[](size_t index) const
+    {
+        return data[index];
+    }
+
+    template <typename T>
+    constexpr Vec2<T> Vec2<T>::operator-() const
+    {
+        return { -x, -y };
     }
 
     // --- Equality Operators ---
 
     template<typename T>
-    bool Vec2<T>::operator==(const Vec2 &rhs) const
+    constexpr bool Vec2<T>::operator==(const Vec2 &rhs) const
     {
         return x == rhs.x && y == rhs.y;
     }
 
     template<typename T>
-    bool Vec2<T>::operator!=(const Vec2 &rhs) const
+    constexpr bool Vec2<T>::operator!=(const Vec2 &rhs) const
     {
         return x != rhs.x || y != rhs.y;
+    }
+
+    template <typename T>
+    bool Vec2<T>::approxEqual(const Vec2& lhs, const Vec2& rhs, T tolerance)
+    {
+        if constexpr (std::is_floating_point_v<T>)
+        {
+            return std::abs(lhs.x - rhs.x) <= tolerance &&
+                   std::abs(lhs.y - rhs.y) <= tolerance;
+        }
+
+        // if integer exact comparison is safe
+        return lhs == rhs;
+    }
+
+    template <typename T>
+    bool Vec2<T>::isApprox(const Vec2& other, T tolerance) const
+    {
+        if constexpr (std::is_floating_point_v<T>)
+        {
+            return std::abs(x - other.x) <= tolerance &&
+                   std::abs(y - other.y) <= tolerance;
+        }
+
+        // if integer exact comparison is safe
+        return *this == other;
     }
 
     // --- Compound Assignment Operators ---
 
     template<typename T>
-    Vec2<T>& Vec2<T>::operator+=(const Vec2 &rhs)
+    constexpr Vec2<T>& Vec2<T>::operator+=(const Vec2 &rhs)
     {
         x += rhs.x;
         y += rhs.y;
@@ -109,7 +170,7 @@ namespace Gas {
     }
 
     template<typename T>
-    Vec2<T>& Vec2<T>::operator-=(const Vec2 &rhs)
+    constexpr Vec2<T>& Vec2<T>::operator-=(const Vec2 &rhs)
     {
         x -= rhs.x;
         y -= rhs.y;
@@ -117,7 +178,7 @@ namespace Gas {
     }
 
     template<typename T>
-    Vec2<T>& Vec2<T>::operator*=(T scalar)
+    constexpr Vec2<T>& Vec2<T>::operator*=(T scalar)
     {
         x *= scalar;
         y *= scalar;
@@ -125,7 +186,7 @@ namespace Gas {
     }
 
     template<typename T>
-    Vec2<T>& Vec2<T>::operator/=(T scalar)
+    constexpr Vec2<T>& Vec2<T>::operator/=(T scalar)
     {
         x /= scalar;
         y /= scalar;
@@ -135,7 +196,7 @@ namespace Gas {
     // --- Math Operators (Implemented using compound assignment) ---
 
     template<typename T>
-    Vec2<T> Vec2<T>::operator+(const Vec2 &rhs) const
+    constexpr Vec2<T> Vec2<T>::operator+(const Vec2 &rhs) const
     {
         Vec2 result = *this;
         result += rhs;
@@ -143,7 +204,7 @@ namespace Gas {
     }
 
     template<typename T>
-    Vec2<T> Vec2<T>::operator-(const Vec2 &rhs) const
+    constexpr Vec2<T> Vec2<T>::operator-(const Vec2 &rhs) const
     {
         Vec2 result = *this;
         result -= rhs;
@@ -151,7 +212,7 @@ namespace Gas {
     }
 
     template<typename T>
-    Vec2<T> Vec2<T>::operator*(T scalar) const
+    constexpr Vec2<T> Vec2<T>::operator*(T scalar) const
     {
         Vec2 result = *this;
         result *= scalar;
@@ -159,7 +220,7 @@ namespace Gas {
     }
 
     template<typename T>
-    Vec2<T> Vec2<T>::operator/(T scalar) const
+    constexpr Vec2<T> Vec2<T>::operator/(T scalar) const
     {
         Vec2 result = *this;
         result /= scalar;
@@ -169,25 +230,25 @@ namespace Gas {
     // --- Utilities ---
 
     template<typename T>
-    T Vec2<T>::dot(const Vec2 &lhs, const Vec2 &rhs)
+    constexpr T Vec2<T>::dot(const Vec2 &lhs, const Vec2 &rhs)
     {
         return lhs.x * rhs.x + lhs.y * rhs.y;
     }
 
     template<typename T>
-    T Vec2<T>::dot(const Vec2 &other) const
+    constexpr T Vec2<T>::dot(const Vec2 &other) const
     {
         return x * other.x + y * other.y;
     }
 
     template<typename T>
-    double Vec2<T>::length() const
+    constexpr auto Vec2<T>::length() const
     {
         return std::sqrt(x * x + y * y);
     }
 
     template<typename T>
-    T Vec2<T>::lengthSquared() const
+    constexpr T Vec2<T>::lengthSquared() const
     {
         return x * x + y * y;
     }
@@ -195,13 +256,15 @@ namespace Gas {
     template<typename T>
     Vec2<T> Vec2<T>::normalized() const
     {
-        if (const double len = length(); len > 0)
+        static_assert(std::is_floating_point_v<T>, "T must be a floating point type");
+
+        if (const T len = static_cast<T>(length()); len > static_cast<T>(0))
         {
             // Multiplying by reciprocal is generally faster than dividing
             return *this * static_cast<T>(1.0 / len);
         }
 
-        return { static_cast<T>(0), static_cast<T>(0) };
+        return Vec2();
     }
 
     // --- common aliases ---

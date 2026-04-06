@@ -43,7 +43,7 @@ namespace Gas {
         constexpr bool operator==(const Vec3& rhs) const;
         constexpr bool operator!=(const Vec3& rhs) const;
 
-        // is approximately equal to comparisons for floating point numbers
+        // is approximately equal comparisons for floating point numbers
         [[nodiscard]] static bool approxEqual(const Vec3& lhs, const Vec3& rhs,
             T tolerance = std::numeric_limits<T>::epsilon() * 100);
 
@@ -107,7 +107,7 @@ namespace Gas {
     template <typename T>
     constexpr Vec3<T> Vec3<T>::Zero()
     {
-        return Vec3(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+        return Vec3();
     }
 
     template <typename T>
@@ -299,7 +299,7 @@ namespace Gas {
             return *this * static_cast<T>(1.0 / len);
         }
 
-        return { static_cast<T>(0), static_cast<T>(0), static_cast<T>(0) };
+        return Vec3();
     }
 
     // --- common aliases ---
