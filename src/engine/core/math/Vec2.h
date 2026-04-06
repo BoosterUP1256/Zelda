@@ -204,7 +204,7 @@ namespace Gas {
         return { static_cast<T>(0), static_cast<T>(0) };
     }
 
-    // -- common aliases --
+    // --- common aliases ---
 
     using Vec2i  = Vec2<int32_t>;
     using Vec2ui = Vec2<uint32_t>;
