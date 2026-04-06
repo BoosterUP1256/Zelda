@@ -22,49 +22,49 @@ namespace Gas {
             T m[4][4];
         };
 
-        Mat4(T x11, T x12, T x13, T x14,
-             T x21, T x22, T x23, T x24,
-             T x31, T x32, T x33, T x34,
-             T x41, T x42, T x43, T x44);
+        constexpr Mat4(T x11, T x12, T x13, T x14,
+                       T x21, T x22, T x23, T x24,
+                       T x31, T x32, T x33, T x34,
+                       T x41, T x42, T x43, T x44);
 
-        explicit Mat4(T diagonal = static_cast<T>(1));
+        constexpr explicit Mat4(T diagonal = static_cast<T>(1));
 
-        explicit Mat4(const T* data);
+        constexpr explicit Mat4(const T* data);
 
         // converting constructor
         template <typename U>
-        explicit Mat4(const Mat4<U>& other);
+        constexpr explicit Mat4(const Mat4<U>& other);
 
         // common named constructors
-        static Mat4 Identity();
-        static Mat4 Translate(T tx, T ty, T tz);
-        static Mat4 Scale(T sx, T sy, T sz);
+        constexpr static Mat4 Identity();
+        constexpr static Mat4 Translate(T tx, T ty, T tz);
+        constexpr static Mat4 Scale(T sx, T sy, T sz);
         static Mat4 RotateX(T angleRadians);
         static Mat4 RotateY(T angleRadians);
         static Mat4 RotateZ(T angleRadians);
         // TODO: Add shear for 3D
 
         // equality operators
-        bool operator==(const Mat4& rhs) const;
-        bool operator!=(const Mat4& rhs) const;
+        constexpr bool operator==(const Mat4& rhs) const;
+        constexpr bool operator!=(const Mat4& rhs) const;
 
         // compound assignment operators (modifies in-place)
-        Mat4& operator+=(const Mat4& rhs);
-        Mat4& operator-=(const Mat4& rhs);
-        Mat4& operator*=(const Mat4& rhs);
-        Mat4& operator*=(T scalar);
-        Mat4& operator/=(T scalar);
+        constexpr Mat4& operator+=(const Mat4& rhs);
+        constexpr Mat4& operator-=(const Mat4& rhs);
+        constexpr Mat4& operator*=(const Mat4& rhs);
+        constexpr Mat4& operator*=(T scalar);
+        constexpr Mat4& operator/=(T scalar);
 
         // math operators (returns a new matrix)
-        Mat4 operator+(const Mat4& rhs) const;
-        Mat4 operator-(const Mat4& rhs) const;
-        Mat4 operator*(const Mat4& rhs) const;
-        Mat4 operator*(T scalar) const;
-        Mat4 operator/(T scalar) const;
+        constexpr Mat4 operator+(const Mat4& rhs) const;
+        constexpr Mat4 operator-(const Mat4& rhs) const;
+        constexpr Mat4 operator*(const Mat4& rhs) const;
+        constexpr Mat4 operator*(T scalar) const;
+        constexpr Mat4 operator/(T scalar) const;
 
         // left-hand scalar multiplication (e.g., 5.0f * matrix)
         // Implemented inline to avoid template linker issues with friends
-        friend Mat4 operator*(T scalar, const Mat4& matrix)
+        constexpr friend Mat4 operator*(T scalar, const Mat4& matrix)
         {
             return matrix * scalar;
         }
@@ -73,47 +73,45 @@ namespace Gas {
     // -- implementation --
 
     template <typename T>
-    Mat4<T>::Mat4(T x11, T x12, T x13, T x14,
+    constexpr Mat4<T>::Mat4(T x11, T x12, T x13, T x14,
                   T x21, T x22, T x23, T x24,
                   T x31, T x32, T x33, T x34,
                   T x41, T x42, T x43, T x44)
-        : m{ {x11, x12, x13, x14},
-             {x21, x22, x23, x24},
-             {x31, x32, x33, x34},
-             {x41, x42, x43, x44} } {}
+        : m11(x11), m12(x12), m13(x13), m14(x14),
+          m21(x21), m22(x22), m23(x23), m24(x24),
+          m31(x31), m32(x32), m33(x33), m34(x34),
+          m41(x41), m42(x42), m43(x43), m44(x44) {}
 
     template <typename T>
-    Mat4<T>::Mat4(T diagonal)
-        : m{ {static_cast<T>(0)} }
-    {
-        m11 = diagonal;
-        m22 = diagonal;
-        m33 = diagonal;
-        m44 = diagonal;
-    }
+    constexpr Mat4<T>::Mat4(T diagonal)
+        : m11(diagonal), m12(0), m13(0), m14(0),
+          m21(0), m22(diagonal), m23(0), m24(0),
+          m31(0), m32(0), m33(diagonal), m34(0),
+          m41(0), m42(0), m43(0), m44(diagonal) {}
 
     template <typename T>
-    Mat4<T>::Mat4(const T* data)
-    {
-        memcpy(m, data, 16 * sizeof(T));
-    }
+    constexpr Mat4<T>::Mat4(const T* data)
+        : m11(data[0]),  m12(data[1]),  m13(data[2]),  m14(data[3]),
+          m21(data[4]),  m22(data[5]),  m23(data[6]),  m24(data[7]),
+          m31(data[8]),  m32(data[9]),  m33(data[10]), m34(data[11]),
+          m41(data[12]), m42(data[13]), m43(data[14]), m44(data[15]) {}
 
     template <typename T>
     template <typename U>
-    Mat4<T>::Mat4(const Mat4<U>& other)
-        : m{ {static_cast<T>(other.m11), static_cast<T>(other.m12), static_cast<T>(other.m13), static_cast<T>(other.m14)},
-             {static_cast<T>(other.m21), static_cast<T>(other.m22), static_cast<T>(other.m23), static_cast<T>(other.m24)},
-             {static_cast<T>(other.m31), static_cast<T>(other.m32), static_cast<T>(other.m33), static_cast<T>(other.m34)},
-             {static_cast<T>(other.m41), static_cast<T>(other.m42), static_cast<T>(other.m43), static_cast<T>(other.m44)} } {}
+    constexpr Mat4<T>::Mat4(const Mat4<U>& other)
+        : m11(static_cast<T>(other.m11)), m12(static_cast<T>(other.m12)), m13(static_cast<T>(other.m13)), m14(static_cast<T>(other.m14)),
+          m21(static_cast<T>(other.m21)), m22(static_cast<T>(other.m22)), m23(static_cast<T>(other.m23)), m24(static_cast<T>(other.m24)),
+          m31(static_cast<T>(other.m31)), m32(static_cast<T>(other.m32)), m33(static_cast<T>(other.m33)), m34(static_cast<T>(other.m34)),
+          m41(static_cast<T>(other.m41)), m42(static_cast<T>(other.m42)), m43(static_cast<T>(other.m43)), m44(static_cast<T>(other.m44)) {}
 
     template <typename T>
-    Mat4<T> Mat4<T>::Identity()
+    constexpr Mat4<T> Mat4<T>::Identity()
     {
         return Mat4(static_cast<T>(1));
     }
 
     template <typename T>
-    Mat4<T> Mat4<T>::Translate(T tx, T ty, T tz)
+    constexpr Mat4<T> Mat4<T>::Translate(T tx, T ty, T tz)
     {
         auto matrix = Mat4::Identity();
 
@@ -125,7 +123,7 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T> Mat4<T>::Scale(T sx, T sy, T sz)
+    constexpr Mat4<T> Mat4<T>::Scale(T sx, T sy, T sz)
     {
         auto matrix = Mat4::Identity();
 
@@ -186,7 +184,7 @@ namespace Gas {
     }
 
     template <typename T>
-    bool Mat4<T>::operator==(const Mat4& rhs) const
+    constexpr bool Mat4<T>::operator==(const Mat4& rhs) const
     {
         return m11 == rhs.m11 && m12 == rhs.m12 && m13 == rhs.m13 && m14 == rhs.m14 &&
                m21 == rhs.m21 && m22 == rhs.m22 && m23 == rhs.m23 && m24 == rhs.m24 &&
@@ -195,13 +193,13 @@ namespace Gas {
     }
 
     template <typename T>
-    bool Mat4<T>::operator!=(const Mat4& rhs) const
+    constexpr bool Mat4<T>::operator!=(const Mat4& rhs) const
     {
         return !(*this == rhs);
     }
 
     template <typename T>
-    Mat4<T>& Mat4<T>::operator+=(const Mat4& rhs)
+    constexpr Mat4<T>& Mat4<T>::operator+=(const Mat4& rhs)
     {
         m11 += rhs.m11;
         m12 += rhs.m12;
@@ -227,7 +225,7 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T>& Mat4<T>::operator-=(const Mat4& rhs)
+    constexpr Mat4<T>& Mat4<T>::operator-=(const Mat4& rhs)
     {
         m11 -= rhs.m11;
         m12 -= rhs.m12;
@@ -253,14 +251,14 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T>& Mat4<T>::operator*=(const Mat4& rhs)
+    constexpr Mat4<T>& Mat4<T>::operator*=(const Mat4& rhs)
     {
         *this = *this * rhs;
         return *this;
     }
 
     template <typename T>
-    Mat4<T>& Mat4<T>::operator*=(T scalar)
+    constexpr Mat4<T>& Mat4<T>::operator*=(T scalar)
     {
         m11 *= scalar;
         m12 *= scalar;
@@ -286,7 +284,7 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T>& Mat4<T>::operator/=(T scalar)
+    constexpr Mat4<T>& Mat4<T>::operator/=(T scalar)
     {
         m11 /= scalar;
         m12 /= scalar;
@@ -312,7 +310,7 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T> Mat4<T>::operator+(const Mat4& rhs) const
+    constexpr Mat4<T> Mat4<T>::operator+(const Mat4& rhs) const
     {
         Mat4 result = *this;
         result += rhs;
@@ -320,7 +318,7 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T> Mat4<T>::operator-(const Mat4& rhs) const
+    constexpr Mat4<T> Mat4<T>::operator-(const Mat4& rhs) const
     {
         Mat4 result = *this;
         result -= rhs;
@@ -328,9 +326,9 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T> Mat4<T>::operator*(const Mat4& rhs) const
+    constexpr Mat4<T> Mat4<T>::operator*(const Mat4& rhs) const
     {
-        return Mat4<T>(
+        return Mat4(
             // Row 1
             m11 * rhs.m11 + m12 * rhs.m21 + m13 * rhs.m31 + m14 * rhs.m41,
             m11 * rhs.m12 + m12 * rhs.m22 + m13 * rhs.m32 + m14 * rhs.m42,
@@ -358,7 +356,7 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T> Mat4<T>::operator*(T scalar) const
+    constexpr Mat4<T> Mat4<T>::operator*(T scalar) const
     {
         Mat4 result = *this;
         result *= scalar;
@@ -366,7 +364,7 @@ namespace Gas {
     }
 
     template <typename T>
-    Mat4<T> Mat4<T>::operator/(T scalar) const
+    constexpr Mat4<T> Mat4<T>::operator/(T scalar) const
     {
         Mat4 result = *this;
         result /= scalar;
