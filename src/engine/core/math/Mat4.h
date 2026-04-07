@@ -42,6 +42,7 @@ namespace Gas {
         static Mat4 RotateX(T angleRadians);
         static Mat4 RotateY(T angleRadians);
         static Mat4 RotateZ(T angleRadians);
+        constexpr static Mat4 Ortho(T left, T right, T bottom, T top, T near, T far);
         // TODO: Add shear for 3D
 
         // equality operators
@@ -179,6 +180,27 @@ namespace Gas {
         matrix.m12 = -sine;
         matrix.m21 = sine;
         matrix.m22 = cosine;
+
+        return matrix;
+    }
+
+    template <typename T>
+    constexpr Mat4<T> Mat4<T>::Ortho(T left, T right, T bottom, T top, T near, T far)
+    {
+        auto matrix = Mat4::Identity();
+
+        // Safely cast our constants to the template type T
+        const T two = static_cast<T>(2);
+
+        // Scale (Diagonal)
+        matrix.m11 = two / (right - left);
+        matrix.m22 = two / (top - bottom);
+        matrix.m33 = -two / (far - near); // Negative for Right-Handed coordinates (OpenGL)
+
+        // Translation (Fourth Column)
+        matrix.m14 = -(right + left) / (right - left);
+        matrix.m24 = -(top + bottom) / (top - bottom);
+        matrix.m34 = -(far + near) / (far - near);
 
         return matrix;
     }
