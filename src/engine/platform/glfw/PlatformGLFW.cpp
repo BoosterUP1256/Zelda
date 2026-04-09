@@ -1,5 +1,6 @@
 #include "core/Platform.h"
 
+#include "core/renderer/renderer.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <cstdlib>
@@ -27,6 +28,8 @@ namespace Gas {
         // Currently don't do anything consider removing in the future
         KeyListener::init();
         MouseListener::init();
+
+        Renderer::init();
     }
 
     void Platform::shutdown()
