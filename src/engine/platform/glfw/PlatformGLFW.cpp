@@ -28,8 +28,6 @@ namespace Gas {
         // Currently don't do anything consider removing in the future
         KeyListener::init();
         MouseListener::init();
-
-        Renderer::init();
     }
 
     void Platform::shutdown()

@@ -10,6 +10,7 @@
 #include "core/input/MouseListener.h"
 #include "platform/glfw/input/InputCodesGLFW.h"
 #include "core/input/InputBackend.h"
+#include "core/renderer/renderer.h"
 
 namespace Gas {
 
@@ -100,6 +101,9 @@ namespace Gas {
             std::cout << "Version 4.6 is required.\n";
             exit(EXIT_FAILURE);
         }
+
+        // initialize renderer
+        Renderer::init();
     
         glfwShowWindow(glfwWindow);
     }
