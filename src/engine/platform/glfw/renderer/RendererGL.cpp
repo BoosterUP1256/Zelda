@@ -1,3 +1,4 @@
+#include "core/Logger.h"
 #include "core/renderer/renderer.h"
 
 namespace Gas {
@@ -106,5 +107,9 @@ namespace Gas {
                 severityString = "GL_DEBUG_TYPE_UNKNOWN";
                 break;
         }
+
+        GAS_ERROR("[OpenGL] Source: {}\n Type: {}\n Severity: {}\n Message: {}\n",
+            sourceString, typeString, severityString, message);
     }
+
 }

@@ -31,6 +31,10 @@ namespace Gas {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, _isResizable);
         glfwWindowHint(GLFW_MAXIMIZED, _isFullscreen);
+
+        // create debug context
+        // TODO: add ifdef for debug builds
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     
         _nativeWindow = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
     
