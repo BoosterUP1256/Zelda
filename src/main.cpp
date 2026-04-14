@@ -56,14 +56,18 @@ int main()
 
     //Gas::Mat4f transform = Gas::Mat4f::Translate(0.5f, -0.5f, 0.0f);
     //Gas::Mat4f transform = Gas::Mat4f::Scale(2.0f, 2.0f, 1.0f);
-    Gas::Mat4 transform = Gas::Mat4f::RotateZ(0.436332f) + Gas::Mat4f::Translate(0.5f, -0.5f, 0.0f);
+    //Gas::Mat4 transform = Gas::Mat4f::RotateZ(0.436332f) + Gas::Mat4f::Translate(0.5f, -0.5f, 0.0f);
+
+    // Model View Projection Matrix
+    Gas::Mat4f model = Gas::Mat4f::Translate(400.0f, -300.0f, 0.0f) * Gas::Mat4f::Scale(100.0f, 100.0f, 1.0f);
+    Gas::Mat4f projection = Gas::Mat4f::Ortho(0, static_cast<float>(window.getWidth()), -static_cast<float>(window.getHeight()), 0, -1, 1);
 
     Gas::Shader shader("../src/res/shaders/basic.glsl");
     shader.bind();
     shader.setUniform4f("u_tint", 1.0, 0.71, 0.76, 1.0);
     //shader.setUniformMat4f("u_mvp", proj);
 
-    shader.setUniformMat4f("u_transform", transform);
+    shader.setUniformMat4f("u_transform", projection * model);
 
     const Gas::Texture texture("../src/res/textures/funny_face.png");
     texture.bind();
