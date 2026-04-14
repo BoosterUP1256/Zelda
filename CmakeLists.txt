@@ -46,6 +46,8 @@ add_library(engine
         src/engine/platform/glfw/renderer/VertexArrayGL.cpp
         src/engine/platform/glfw/renderer/RendererGL.cpp
         src/engine/platform/glfw/renderer/TextureGL.cpp
+        src/engine/core/Camera.cpp
+        src/engine/core/Camera.h
 )
 
 # Set up include paths for the engine and anything that links to it
