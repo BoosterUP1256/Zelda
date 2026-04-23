@@ -18,6 +18,22 @@ namespace Gas {
         glDeleteBuffers(1, &_rendererId);
     }
 
+    VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
+        : _rendererId(other._rendererId)
+    {
+        other._rendererId = 0;
+    }
+
+    VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept
+    {
+        if (this != &other) {
+            glDeleteBuffers(1, &_rendererId);
+            _rendererId = other._rendererId;
+            other._rendererId = 0;
+        }
+        return *this;
+    }
+
     void VertexBuffer::bind() const
     {
         glBindBuffer(GL_ARRAY_BUFFER, _rendererId);
