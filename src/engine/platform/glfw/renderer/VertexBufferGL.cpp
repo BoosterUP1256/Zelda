@@ -28,7 +28,9 @@ namespace Gas {
     {
         if (this != &other)
             {
-            glDeleteBuffers(1, &_rendererId);
+            if (_rendererId != 0)
+                glDeleteBuffers(1, &_rendererId);
+
             _rendererId = other._rendererId;
             other._rendererId = 0;
         }
