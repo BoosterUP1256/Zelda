@@ -26,7 +26,8 @@ namespace Gas {
 
     VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept
     {
-        if (this != &other) {
+        if (this != &other)
+            {
             glDeleteBuffers(1, &_rendererId);
             _rendererId = other._rendererId;
             other._rendererId = 0;

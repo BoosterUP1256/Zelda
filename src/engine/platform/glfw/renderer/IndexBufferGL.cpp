@@ -15,7 +15,31 @@ namespace Gas {
 
     IndexBuffer::~IndexBuffer()
     {
-        glDeleteBuffers(1, &_rendererId);
+        if (_rendererId != 0)
+            glDeleteBuffers(1, &_rendererId);
+    }
+
+    IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
+        : _rendererId(other._rendererId), _count(other._count)
+    {
+        other._rendererId = 0;
+        other._count = 0;
+    }
+
+    IndexBuffer& IndexBuffer::operator=(IndexBuffer&& other) noexcept
+    {
+        if (this != &other)
+        {
+            if (_rendererId != 0)
+                glDeleteBuffers(1, &_rendererId);
+
+            _rendererId = other._rendererId;
+            _count = other._count;
+            
+            other._rendererId = 0;
+            other._count = 0;
+        }
+        return *this;
     }
 
     void IndexBuffer::bind() const
